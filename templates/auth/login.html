@@ -1,55 +1,90 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion - Annuaire des Alumni</title>
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
+    <script>
+        // Tailwind config
+        tailwind.config = {
+            theme: {
+                extend: {}
+            }
+        }
+    </script>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
-    <div class="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-800">Annuaire des Alumni</h1>
-            <p class="text-gray-600 mt-2">Connectez-vous pour accéder à l'annuaire</p>
-        </div>
-
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }} mb-4">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-
-        <form method="POST" action="{{ url_for('auth.login') }}">
-            <div class="mb-4">
-                <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
-                <input type="email" id="email" name="email" required
-                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+<body class="min-h-screen bg-base-100 flex items-center justify-center">
+    <div class="card w-full max-w-md bg-base-100 shadow-xl">
+        <div class="card-body">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold">Annuaire des Alumni</h1>
+                <p class="text-base-content/70 mt-2">Connectez-vous pour accéder à l'annuaire</p>
             </div>
-            <div class="mb-6">
-                <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Mot de passe</label>
-                <input type="password" id="password" name="password" required
-                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
-            <div class="flex items-center justify-between mb-6">
-                <div class="flex items-center">
-                    <input type="checkbox" id="remember" name="remember" class="h-4 w-4 text-blue-600">
-                    <label for="remember" class="ml-2 block text-sm text-gray-700">Se souvenir de moi</label>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        {% set alert_class = "alert-info" %}
+                        {% if category == "success" %}
+                            {% set alert_class = "alert-success" %}
+                        {% elif category == "danger" or category == "error" %}
+                            {% set alert_class = "alert-error" %}
+                        {% elif category == "warning" %}
+                            {% set alert_class = "alert-warning" %}
+                        {% endif %}
+                        <div role="alert" class="alert {{ alert_class }} mb-4">
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('auth.login') }}">
+                <div class="form-control mb-4">
+                    <label for="email" class="label">
+                        <span class="label-text">Email</span>
+                    </label>
+                    <input type="email" id="email" name="email" required
+                           class="input input-bordered w-full">
                 </div>
-                <a href="{{ url_for('auth.reset_password') }}" class="text-sm text-blue-600 hover:underline">Mot de passe oublié?</a>
-            </div>
-            <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                Se connecter
-            </button>
-        </form>
+                <div class="form-control mb-6">
+                    <label for="password" class="label">
+                        <span class="label-text">Mot de passe</span>
+                    </label>
+                    <input type="password" id="password" name="password" required
+                           class="input input-bordered w-full">
+                </div>
+                <div class="flex items-center justify-between mb-6">
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                            <input type="checkbox" id="remember" name="remember" class="checkbox checkbox-primary">
+                            <span class="label-text ml-2">Se souvenir de moi</span>
+                        </label>
+                    </div>
+                    <a href="{{ url_for('auth.reset_password') }}" class="link link-primary text-sm">Mot de passe oublié?</a>
+                </div>
+                <button type="submit" class="btn btn-primary w-full">
+                    Se connecter
+                </button>
+            </form>
 
-        <div class="mt-6 text-center">
-            <a href="{{ url_for('index.index') }}" class="text-sm text-blue-600 hover:underline">Retour à l'accueil</a>
+            <div class="divider mt-6">OU</div>
+
+            <div class="text-center">
+                <a href="{{ url_for('index.index') }}" class="link link-primary text-sm">Retour à l'accueil</a>
+            </div>
         </div>
     </div>
+
+    <script>
+        // Theme switcher - load saved theme from localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        });
+    </script>
 </body>
 </html>

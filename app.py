@@ -16,7 +16,7 @@ if __name__ == '__main__':
         # Création d'un admin par défaut si aucun n'existe
         admin = User.query.filter_by(role=RoleEnum.ADMIN).first()
         if not admin:
-            admin = User(email='admin@example.com', role=RoleEnum.ADMIN)
+            admin = User(email='admin@example.com', role=RoleEnum.ADMIN) # Pour les test. Ces identifiants seront rétiré en mode production
             admin.set_password('admin123')
             db.session.add(admin)
             db.session.commit()

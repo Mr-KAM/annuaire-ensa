@@ -2,6 +2,7 @@ import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_mail import Mail, Message
 from datetime import datetime
 import secrets
 
@@ -25,6 +26,15 @@ def create_app():
     app.config['ALLOWED_EXTENSIONS_PHOTO'] = {'png', 'jpg', 'jpeg', 'gif'}
     app.config['ALLOWED_EXTENSIONS_CV'] = {'pdf'}
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max upload
+    app.config['MAIL_SERVER'] = 'your_mail_server'
+    app.config['MAIL_PORT'] = 587
+    app.config['MAIL_USE_TLS'] = True
+    app.config['MAIL_USE_SSL'] = False
+    app.config['MAIL_USERNAME'] = 'your_username'
+    app.config['MAIL_PASSWORD'] = 'your_password'
+    app.config['MAIL_DEFAULT_SENDER'] = 'your_email@example.com'
+
+    mail = Mail(app)
 
     # Création des dossiers d'upload s'ils n'existent pas
     os.makedirs(app.config['UPLOAD_FOLDER_PHOTOS'], exist_ok=True)

@@ -15,14 +15,14 @@ def generate_password(length=10):
     characters = string.ascii_letters + string.digits
     return ''.join(random.choice(characters) for i in range(length))
 
-# Fonction utilitaire pour simuler l'envoi d'un SMS
+# Fonction pour l'envoi d'un SMS
 def send_sms(phone_number, message):
     # Dans une application réelle, cette fonction utiliserait une API comme Twilio
     # Pour cette démo, on simule juste l'envoi
     print(f"SMS envoyé à {phone_number}: {message}")
     return True
 
-# Fonction utilitaire pour simuler l'envoi d'un email
+# Fonction utilitaire pourl'envoi d'un email
 def send_email(email, subject, message):
     # Dans une application réelle, cette fonction utiliserait une API comme SendGrid
     # Pour cette démo, on simule juste l'envoi

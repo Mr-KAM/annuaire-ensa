@@ -1,44 +1,120 @@
 <!DOCTYPE html>
-<html lang="fr" data-theme="dark">
+<html lang="fr" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Annuaire des Alumni{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
+     <!-- Préconnexion pour améliorer la vitesse de chargement -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Lien vers la police Montserrat -->
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+            /* Appliquer la police à tout le corps de la page */
+    body {
+        font-family: 'Nunito', sans-serif;
+      }
+      /* Ou appliquer à des éléments spécifiques */
+      h1, h2 {
+        font-family: 'Nunito', serif;
+      }
+    </style>
+    <script>
+        // Tailwind config
+        tailwind.config = {
+            theme: {
+                extend: {}
+            }
+        }
+    </script>
     {% block extra_css %}{% endblock %}
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="min-h-screen">
     <!-- Navigation -->
-    <nav class="bg-white shadow-md">
+    <div class="navbar shadow-md sticky top-0 z-50 bg-base-100">
         <div class="container mx-auto px-4">
-            <div class="flex justify-between items-center py-4">
-                <div class="flex items-center">
-                    <a href="{{ url_for('index.index') }}" class="text-xl font-bold text-blue-600">Annuaire des Alumni</a>
-                </div>
-                <div class="flex items-center space-x-4">
+            <div class="flex-1 flex">
+                <img src="{{ url_for('static', filename='/assets/images/logo.png') }}" alt="Logo" class="w-8 h-8 mr-2 rounded-full">
+                <a href="{{ url_for('index.index') }}" class="text-3xl font-bold text-primary">
+                    ANNUAIRE ENSA</a>
+            </div>
+            <div class="flex gap-2">
+                <!-- Theme Switcher -->
+
+
+                <!-- Navigation Links -->
+                <div class="flex items-center space-x-2">
                     {% if current_user.is_authenticated %}
                         {% if current_user.is_admin %}
-                            <a href="{{ url_for('admin.dashboard') }}" class="text-gray-700 hover:text-blue-600">Administration</a>
+                            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-ghost">Administration</a>
                         {% endif %}
-                        <a href="{{ url_for('annuaire.index') }}" class="text-gray-700 hover:text-blue-600">Annuaire</a>
-                        <a href="{{ url_for('profile.view_profile') }}" class="text-gray-700 hover:text-blue-600">Mon Profil</a>
-                        <a href="{{ url_for('auth.logout') }}" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md">Déconnexion</a>
+                        <a href="{{ url_for('annuaire.index') }}" class="btn btn-ghost">Annuaire</a>
+                        <a href="{{ url_for('profile.view_profile') }}" class="btn btn-ghost">Mon Profil</a>
+                        <a href="{{ url_for('auth.logout') }}" class="btn btn-error">Déconnexion</a>
                     {% else %}
-                        <a href="{{ url_for('auth.login') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">Connexion</a>
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-primary">Connexion</a>
                     {% endif %}
+                </div>
+                <div class="dropdown dropdown-end">
+                    <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                        </svg>
+                    </div>
+                    <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                        <li><button class="theme-item" data-theme="light">Light</button></li>
+                        <li><button class="theme-item" data-theme="dark">Dark</button></li>
+                        <li><button class="theme-item" data-theme="cupcake">Cupcake</button></li>
+                        <li><button class="theme-item" data-theme="bumblebee">Bumblebee</button></li>
+                        <li><button class="theme-item" data-theme="emerald">Emerald</button></li>
+                        <li><button class="theme-item" data-theme="corporate">Corporate</button></li>
+                        <li><button class="theme-item" data-theme="synthwave">Synthwave</button></li>
+                        <li><button class="theme-item" data-theme="retro">Retro</button></li>
+                        <li><button class="theme-item" data-theme="cyberpunk">Cyberpunk</button></li>
+                        <li><button class="theme-item" data-theme="valentine">Valentine</button></li>
+                        <li><button class="theme-item" data-theme="halloween">Halloween</button></li>
+                        <li><button class="theme-item" data-theme="garden">Garden</button></li>
+                        <li><button class="theme-item" data-theme="forest">Forest</button></li>
+                        <li><button class="theme-item" data-theme="aqua">Aqua</button></li>
+                        <li><button class="theme-item" data-theme="lofi">Lofi</button></li>
+                        <li><button class="theme-item" data-theme="pastel">Pastel</button></li>
+                        <li><button class="theme-item" data-theme="fantasy">Fantasy</button></li>
+                        <li><button class="theme-item" data-theme="wireframe">Wireframe</button></li>
+                        <li><button class="theme-item" data-theme="black">Black</button></li>
+                        <li><button class="theme-item" data-theme="luxury">Luxury</button></li>
+                        <li><button class="theme-item" data-theme="dracula">Dracula</button></li>
+                        <li><button class="theme-item" data-theme="cmyk">CMYK</button></li>
+                        <li><button class="theme-item" data-theme="autumn">Autumn</button></li>
+                        <li><button class="theme-item" data-theme="business">Business</button></li>
+                        <li><button class="theme-item" data-theme="acid">Acid</button></li>
+                        <li><button class="theme-item" data-theme="lemonade">Lemonade</button></li>
+                        <li><button class="theme-item" data-theme="night">Night</button></li>
+                        <li><button class="theme-item" data-theme="coffee">Coffee</button></li>
+                        <li><button class="theme-item" data-theme="winter">Winter</button></li>
+                    </ul>
                 </div>
             </div>
         </div>
-    </nav>
+    </div>
 
     <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             <div class="container mx-auto px-4 mt-4">
                 {% for category, message in messages %}
-                    <div class="alert alert-{{ category }} mb-4">
-                        {{ message }}
+                    {% set alert_class = "alert-info" %}
+                    {% if category == "success" %}
+                        {% set alert_class = "alert-success" %}
+                    {% elif category == "danger" or category == "error" %}
+                        {% set alert_class = "alert-error" %}
+                    {% elif category == "warning" %}
+                        {% set alert_class = "alert-warning" %}
+                    {% endif %}
+                    <div role="alert" class="alert {{ alert_class }} mb-4">
+                        <span>{{ message }}</span>
                     </div>
                 {% endfor %}
             </div>
@@ -46,28 +122,44 @@
     {% endwith %}
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 py-8">
+    <main class="container mx-auto px-4 py-8 mb-25">
         {% block content %}{% endblock %}
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white py-6 mt-12">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="mb-4 md:mb-0">
-                    <p class="text-gray-600">&copy; {{ now.year }} Annuaire des Alumni. Tous droits réservés.</p>
-                </div>
-                <div class="flex space-x-4">
-                    <a href="#" class="text-gray-600 hover:text-blue-600">À propos</a>
-                    <a href="#" class="text-gray-600 hover:text-blue-600">Contact</a>
-                    <a href="#" class="text-gray-600 hover:text-blue-600">Confidentialité</a>
-                </div>
+    <footer class="footer footer-center p-5 bg-base-200 text-base-content mt-12" style="position:fixed; bottom:0">
+        <div class="container mx-auto">
+            <div class="grid grid-flow-col gap-4">
+                <a href="#" class="link link-hover">À propos</a>
+                <a href="#" class="link link-hover">Contact</a>
+                <a href="#" class="link link-hover">Confidentialité</a>
+            </div>
+            <div>
+                <p>&copy; {{ now.year }} Annuaire des Alumni. Tous droits réservés.</p>
             </div>
         </div>
     </footer>
 
     <!-- JavaScript -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Theme switcher
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load saved theme from localStorage or use default
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+
+            // Add event listeners to theme buttons
+            const themeItems = document.querySelectorAll('.theme-item');
+            themeItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const theme = this.getAttribute('data-theme');
+                    document.documentElement.setAttribute('data-theme', theme);
+                    localStorage.setItem('theme', theme);
+                });
+            });
+        });
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>
