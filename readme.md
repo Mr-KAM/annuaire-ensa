@@ -29,6 +29,19 @@ Developpé en python , html et css.
 Elle est construite avec Flask, SQLAlchemy et daisyui et tailwindscss.
 Elle est responsive et s'adapte à tous les écrans.
 
+
+```bash
+C:.
++---app.py              # fichier principal de l'application
++---models.py           # modèles de la base de donnèes
++---requiriments.txt    # liste des dépendances
++---instance            # Base de données sqlite ici
++---routes              # les routes sont ici
++---static              # fichiers statiques
++---templates           # fichiers html
+
+```
+
 ## En cours
 
 - [ ] Ajouter l'envoie de email via flask-email lors de la creation d'un compte
