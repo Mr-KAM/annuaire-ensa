@@ -1,30 +1,25 @@
-#=======================================================================
-#IMPORTATION DES PACKAGES ET MODULES
+from __init__ import create_app, db
+from models import User, RoleEnum
 
-from flask import Flask, render_template, request, jsonify
-#----------------------------------
-#Importation des routes dépuis le dossier routes
+app = create_app()
 
-
-#=======================================================================
-#CREATION DE L'APP
-app = Flask(__name__)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test_db.db' # Configure the database URI
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # disable the feature of flask_sqlalchemy that signals the application everytime a change is about to be made in the database
-from models import *
-
-
-
-
-from routes.index import *
-from routes.annuaire import*
-
+# Fonctions utilitaires
+def allowed_file(filename, allowed_extensions):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions
 
 #=======================================================================
-#PROGRAMME PRINCIPAL
+# PROGRAMME PRINCIPAL
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-        
+
+        # Création d'un admin par défaut si aucun n'existe
+        admin = User.query.filter_by(role=RoleEnum.ADMIN).first()
+        if not admin:
+            admin = User(email='admin@example.com', role=RoleEnum.ADMIN)
+            admin.set_password('admin123')
+            db.session.add(admin)
+            db.session.commit()
+            print("Admin créé avec succès: admin@example.com / admin123")
+
     app.run(debug=True)
