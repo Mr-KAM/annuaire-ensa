@@ -3,6 +3,15 @@
 
 # Configuration
 
+## Cloné le dépot
+
+```bash
+git clone https://github.com/Mr-KAM/annuaire-ensa.git
+cd annuaire-ensa
+# Si vous n'avez pas déjà pew sinon utiliser virtualenv si vous êtes pls à la aise avec.
+pip install pew
+```
+
 ## Environnement virtuel
 
 ```bash
