@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Annuaire des Alumni - Bienvenue</title>
+    <link rel="icon" href="{{ url_for('static', filename='assets/images/favicon.png') }}" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
@@ -116,7 +117,7 @@
     <!-- Hero Section -->
     <section class="hero-section flex items-center justify-center">
         <div class="text-center ">
-            <h1 class="text-6xl font-bold mb-4 text-white">Annuaire des Alumni</h1>
+            <h1 class="text-6xl font-bold mb-4 text-white">Annuaire ENSA</h1>
             <p class="text-xl mb-8 text-gray-400">Restez connectés avec la communauté des anciens élèves</p>
             {% if current_user.is_authenticated %}
                 <a href="{{ url_for('index.home') }}" class="bg-primary hover:bg-green-700  px-6 py-3 rounded-md text-lg">Accéder à l'annuaire</a>

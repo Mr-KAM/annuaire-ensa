@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash
-from __init__ import db
+from __init__ import db, mail, send_mail, pb, sendSms
 from models import User, UserProfile, RoleEnum
 import random
 import string
@@ -54,8 +54,20 @@ def reset_password():
             user.set_password(temp_password)
             db.session.commit()
 
-            # Ici, on simulerait l'envoi d'un email avec le mot de passe temporaire
-            flash(f'Un nouveau mot de passe a été envoyé à {email}. (Pour les besoins de la démo: {temp_password})', 'success')
+            # La fonction d'envoie de e-mail est fonctionnelle maintenant
+            objet= "Réinitialisation de mot de passe"
+            message=f'Salut, vous avez réinitialisé votre mot de passe. Votre nouveau mot de passe est {temp_password} pour votre nom d\'utilisateur(email) {email}.'
+            destination= email
+            send_mail(
+                mail,
+                objet,
+                message,
+                destination
+                )
+            if user.numero_whatsapp:
+                sendSms(pb,message, user.numero_whatsapp)
+            flash(f'Un nouveau mot de passe a été envoyé à {email}.', 'success')
+            print(f"Pour les besoins de la démo: {temp_password}")
             return redirect(url_for('auth.login'))
         else:
             flash('Aucun compte associé à cet email.', 'danger')

@@ -3,7 +3,7 @@
 {% block title %}Ajouter un membre - Administration{% endblock %}
 
 {% block content %}
-<div class="bg-white rounded-lg shadow-md p-8">
+<div class=" rounded-lg shadow-md p-8">
     <div class="flex items-center justify-between mb-6">
         <h1 class="text-3xl font-bold text-gray-800">Ajouter un membre</h1>
         <a href="{{ url_for('admin.dashboard') }}" class="text-blue-600 hover:text-blue-800 flex items-center">
@@ -18,24 +18,24 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Informations personnelles -->
             <div class="space-y-6">
-                <h2 class="text-xl font-bold text-gray-800">Informations personnelles</h2>
+                <h2 class="text-xl font-bold ">Informations personnelles</h2>
 
                 <div>
                     <label for="nom_prenoms" class="block text-sm font-medium text-gray-700">Nom et prénoms *</label>
                     <input type="text" id="nom_prenoms" name="nom_prenoms" required
-                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                           class="input block w-full rounded-md  shadow-sm  focus:ring-blue-500">
                 </div>
 
                 <div>
                     <label for="email" class="block text-sm font-medium text-gray-700">Email *</label>
                     <input type="email" id="email" name="email" required
-                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                           class="input block w-full rounded-md  shadow-sm  focus:ring-blue-500">
                 </div>
 
                 <div>
                     <label for="promotion" class="block text-sm font-medium text-gray-700">Promotion</label>
                     <select id="promotion" name="promotion"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            class="input block w-full rounded-md  shadow-sm  focus:ring-blue-500">
                         <option value="">-- Sélectionner --</option>
                         {% for promotion in promotions %}
                             <option value="{{ promotion.name }}">{{ promotion.value }}</option>
@@ -46,7 +46,7 @@
                 <div>
                     <label for="specialite" class="block text-sm font-medium text-gray-700">Spécialité</label>
                     <select id="specialite" name="specialite"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            class="input block w-full rounded-md  shadow-sm  focus:ring-blue-500">
                         <option value="">-- Sélectionner --</option>
                         {% for specialite in specialites %}
                             <option value="{{ specialite.name }}">{{ specialite.value }}</option>
@@ -57,25 +57,25 @@
                 <div>
                     <label for="structure" class="block text-sm font-medium text-gray-700">Structure (employeur)</label>
                     <input type="text" id="structure" name="structure"
-                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                           class="input block w-full rounded-md  shadow-sm  focus:ring-blue-500">
                 </div>
 
                 <div>
                     <label for="fonction" class="block text-sm font-medium text-gray-700">Fonction</label>
                     <input type="text" id="fonction" name="fonction"
-                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                           class="input block w-full rounded-md  shadow-sm  focus:ring-blue-500">
                 </div>
 
                 <div>
                     <label for="localite_residence" class="block text-sm font-medium text-gray-700">Localité de résidence</label>
                     <input type="text" id="localite_residence" name="localite_residence"
-                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                           class="input block w-full rounded-md  shadow-sm  focus:ring-blue-500">
                 </div>
 
                 <div>
                     <label for="statut_professionnel" class="block text-sm font-medium text-gray-700">Statut professionnel</label>
                     <select id="statut_professionnel" name="statut_professionnel"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            class="input block w-full rounded-md  shadow-sm  focus:ring-blue-500">
                         <option value="">-- Sélectionner --</option>
                         {% for statut in statuts %}
                             <option value="{{ statut.name }}">{{ statut.value }}</option>
@@ -85,7 +85,7 @@
 
                 <div class="flex items-center">
                     <input type="checkbox" id="is_mentor_available" name="is_mentor_available"
-                           class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                           class="checkbox">
                     <label for="is_mentor_available" class="ml-2 block text-sm text-gray-700">
                         Disponible comme mentor
                     </label>
@@ -94,45 +94,45 @@
 
             <!-- Contact et fichiers -->
             <div class="space-y-6">
-                <h2 class="text-xl font-bold text-gray-800">Contact et fichiers</h2>
+                <h2 class="text-xl font-bold ">Contact et fichiers</h2>
 
                 <div>
                     <label for="numero_whatsapp" class="block text-sm font-medium text-gray-700">Numéro WhatsApp</label>
                     <input type="tel" id="numero_whatsapp" name="numero_whatsapp"
-                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                           class="input block w-full rounded-md  shadow-sm  focus:ring-blue-500">
                     <p class="mt-1 text-xs text-gray-500">Format: +XXX XXXXXXXXX (minimum 10 chiffres)</p>
                 </div>
 
                 <div>
                     <label for="autres_numeros" class="block text-sm font-medium text-gray-700">Autres numéros</label>
                     <input type="text" id="autres_numeros" name="autres_numeros"
-                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                           class="input block w-full rounded-md  shadow-sm  focus:ring-blue-500">
                 </div>
 
                 <div>
                     <label for="compte_linkedin" class="block text-sm font-medium text-gray-700">Compte LinkedIn</label>
                     <input type="url" id="compte_linkedin" name="compte_linkedin"
-                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                           class="input block w-full rounded-md  shadow-sm  focus:ring-blue-500">
                 </div>
 
                 <div>
                     <label for="photo" class="block text-sm font-medium text-gray-700">Photo de profil</label>
                     <input type="file" id="photo" name="photo" accept="image/*"
-                           class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                           class="input block w-full rounded-md  shadow-sm  focus:ring-blue-500">
                     <p class="mt-1 text-xs text-gray-500">Formats acceptés: PNG, JPG, JPEG, GIF</p>
                 </div>
 
                 <div>
                     <label for="cv" class="block text-sm font-medium text-gray-700">CV (PDF)</label>
                     <input type="file" id="cv" name="cv" accept="application/pdf"
-                           class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                           class="input block w-full rounded-md  shadow-sm  focus:ring-blue-500">
                     <p class="mt-1 text-xs text-gray-500">Format accepté: PDF uniquement</p>
                 </div>
 
                 <div>
                     <label for="biographie" class="block text-sm font-medium text-gray-700">Biographie</label>
                     <textarea id="biographie" name="biographie" rows="5"
-                              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+                              class="textarea block w-full rounded-md  shadow-sm  focus:ring-blue-500"></textarea>
                 </div>
             </div>
         </div>

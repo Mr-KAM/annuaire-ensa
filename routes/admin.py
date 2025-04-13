@@ -4,7 +4,7 @@ import string
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, current_app
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
-from __init__ import db, allowed_file
+from __init__ import db, allowed_file, mail,send_mail ,pb, sendSms
 from models import User, UserProfile, RoleEnum, PromotionEnum, SpecialiteEnum, StatutProfessionnelEnum
 import uuid
 
@@ -17,17 +17,22 @@ def generate_password(length=10):
 
 # Fonction pour l'envoi d'un SMS
 def send_sms(phone_number, message):
-    # Dans une application réelle, cette fonction utiliserait une API comme Twilio
-    # Pour cette démo, on simule juste l'envoi
+    # Dans cette fonction utiliserait une API comme Twilio ou pushbullet
+
+    # Pour le moment, j'ai une clé d'api pushbullet, mais je crois que c'est limité à 50 sms le mois. L'une des limite c'est que elle utiliise l'application pushbullet sur ton telephone et envoie les sms via ton numéro de téléphone.
+    # Mais je crois qu'on peu ruser et créer entre deux à 3 carte sim qui vont taffer à cet effet.
+
+    sendSms(pb,message, phone_number)
     print(f"SMS envoyé à {phone_number}: {message}")
     return True
 
 # Fonction utilitaire pourl'envoi d'un email
-def send_email(email, subject, message):
-    # Dans une application réelle, cette fonction utiliserait une API comme SendGrid
-    # Pour cette démo, on simule juste l'envoi
-    print(f"Email envoyé à {email} avec le sujet '{subject}': {message}")
+def send_email(destination, objet, message):
+    send_mail(mail, objet, message, destination) # Importé depuis __init__.py à la racine du projet
+    print(f"Email envoyé à {destination} avec le sujet '{objet}': {message}")
     return True
+
+
 
 @admin_bp.route('/')
 @login_required
@@ -114,13 +119,13 @@ def add_member():
         email_message = f"""
         Bonjour {nom_prenoms},
 
-        Votre compte a été créé dans l'annuaire des alumni.
+        Votre compte a été créé dans l'annuaire ENSA.
 
         Voici vos identifiants de connexion:
         Email: {email}
         Mot de passe: {password}
 
-        Nous vous invitons à vous connecter et à compléter votre profil.
+        Nous vous invitons à vous connecter et à compléter votre profil ainsi qu'à réinitialiser votre mot de passe.
 
         Cordialement,
         L'équipe de l'annuaire

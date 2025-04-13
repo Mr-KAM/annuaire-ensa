@@ -1,3 +1,6 @@
+
+🥳 New UPDATE
+
 # Configuration
 
 ## Environnement virtuel
@@ -21,6 +24,19 @@ pip install -r requirements.txt
 python app.py
 ```
 
+creer un fichier
+`.env`
+
+Puis ajoutter les variables d'environnment pour l'envoi de EMAIL et de sms avec pushbullet
+
+
+```bash
+PUSHBULLET_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+EMAIL_MESSAGERIE=monadressemail@gmail.com
+EMAIL_MESSAGERIE_PASSWORD=xxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+[Lien pour clé d'api de pushbullet (PUSHBULLET_KEY)](https://www.pushbullet.com/#settings/account)
 ## Description
 
 Cette application web est un annuaire de l'amicale ENSA. Elle permet de gérer les membres de l'amicale, de les ajouter, de les modifier et de les supprimer. Elle permet également de gérer les profiles et de les consulter.
@@ -44,7 +60,8 @@ C:.
 
 ## En cours
 
-- [ ] Ajouter l'envoie de email via flask-email lors de la creation d'un compte
+- [x] Ajouter l'envoie de email lors de la creation d'un compte
+- [x] Envoyer sms à la creation de compte
 - [ ] Ajouter plusieur perrsonnes via un fichier csv ou excel
 - [ ] Creer un chat avec les membres
 - [ ] Ajouter un calendrier avec les anniversaires
