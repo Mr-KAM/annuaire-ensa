@@ -1,6 +1,7 @@
 
 🥳 New UPDATE
-
+Une proposition de logo pour l'App
+![logo](static\assets\images\logo2.png)
 # Configuration
 
 ## Cloné le dépot
