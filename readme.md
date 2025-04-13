@@ -52,8 +52,14 @@ EMAIL_MESSAGERIE_PASSWORD=xxxxxxxxxxxxxxxxxxxxxxxxxx
 
 Cette application web est un annuaire de l'amicale ENSA. Elle permet de gérer les membres de l'amicale, de les ajouter, de les modifier et de les supprimer. Elle permet également de gérer les profiles et de les consulter.
 
-Developpé en python , html et css.
-Elle est construite avec Flask, SQLAlchemy et daisyui et tailwindscss.
+Developpé en PYTHON , HTML et CSS.
+
+Elle est construite avec :
+
+- Flask : [Flask Documentation](https://flask.palletsprojects.com/en/stable/)
+- SQLAlchemy : [SQLAlchemy Documentation](https://docs.sqlalchemy.org/en/20/intro.html#installation)
+- DaisyUI : [DaisyUI Documentation](https://daisyui.com/docs/v5/)
+- tailwindscss : [TailwindCSS Documentation](https://tailwindcss.com/docs/installation)
 Elle est responsive et s'adapte à tous les écrans.
 
 
