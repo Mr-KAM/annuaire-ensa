@@ -12,6 +12,8 @@ cd annuaire-ensa
 pip install pew
 ```
 
+Si vous aviez dejà le depot cloné sur votre machine , mettez le à jour via `git pull`.
+
 ## Environnement virtuel
 
 ```bash
