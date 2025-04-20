@@ -14,14 +14,43 @@
   <!-- Lien vers la police Montserrat -->
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
     <style>
-            /* Appliquer la police à tout le corps de la page */
-    body {
-        font-family: 'Nunito', sans-serif;
-      }
-      /* Ou appliquer à des éléments spécifiques */
-      h1, h2 {
-        font-family: 'Nunito', serif;
-      }
+        /* Appliquer la police à tout le corps de la page */
+        body {
+            font-family: 'Nunito', sans-serif;
+        }
+        /* Ou appliquer à des éléments spécifiques */
+        h1, h2 {
+            font-family: 'Nunito', serif;
+        }
+
+        /* Animations pour les messages flash */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+
+        .flash-message {
+            animation: fadeInDown 0.5s ease forwards;
+        }
+
+        .flash-message.fade-out {
+            animation: fadeOut 0.5s ease forwards;
+        }
     </style>
     <script>
         // Tailwind config
@@ -102,9 +131,9 @@
     </div>
 
     <!-- Flash Messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="container mx-auto px-4 mt-4">
+    <div id="flash-container" class="container mx-auto px-4 mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
                 {% for category, message in messages %}
                     {% set alert_class = "alert-info" %}
                     {% if category == "success" %}
@@ -114,13 +143,13 @@
                     {% elif category == "warning" %}
                         {% set alert_class = "alert-warning" %}
                     {% endif %}
-                    <div role="alert" class="alert {{ alert_class }} mb-4">
+                    <div role="alert" class="alert {{ alert_class }} mb-4 flash-message">
                         <span>{{ message }}</span>
                     </div>
                 {% endfor %}
-            </div>
-        {% endif %}
-    {% endwith %}
+            {% endif %}
+        {% endwith %}
+    </div>
 
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-8 mb-25">
@@ -159,6 +188,21 @@
                     localStorage.setItem('theme', theme);
                 });
             });
+
+            // Auto-hide flash messages after 6 seconds
+            const flashMessages = document.querySelectorAll('.flash-message');
+            if (flashMessages.length > 0) {
+                flashMessages.forEach(message => {
+                    setTimeout(() => {
+                        message.classList.add('fade-out');
+
+                        // Remove element after animation completes
+                        message.addEventListener('animationend', () => {
+                            message.remove();
+                        });
+                    }, 6000); // 6 seconds
+                });
+            }
         });
     </script>
     {% block extra_js %}{% endblock %}

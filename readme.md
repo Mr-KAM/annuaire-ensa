@@ -77,10 +77,25 @@ C:.
 
 ```
 
-## En cours
+## Fonctionnalités
+
+### Les pages disponibles présentement
+**Landing page** : Page d'accueil de l'application
+![Landing page](./static/assets/images/screenshot/landing.png)
+**Login** : Page de connexion
+![Login](./static/assets/images/screenshot/login.png)
+**Annuaire** : Page de l'annuaire
+![Annuaire](./static/assets/images/screenshot/annuaire.png)
+**Profile** : Page de profile
+![Profile](./static/assets/images/screenshot/profile.png)
+**Ajouter un membre (admin)** : Page d'ajout d'un membre
+**Modifier un membre (admin)** : Page de modification d'un membre
+**Supprimer un membre (admin)** : Page de suppression d'un membre
+
+### Fonctionnalité à ajouter
 
 - [x] Ajouter l'envoie de email lors de la creation d'un compte
-- [x] Envoyer sms à la creation de compte
+- [x] Envoyer sms à la creation de compte (a revoir)
 - [ ] Ajouter plusieur perrsonnes via un fichier csv ou excel
 - [ ] Creer un chat avec les membres
 - [ ] Ajouter un calendrier avec les anniversaires

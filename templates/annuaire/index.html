@@ -23,23 +23,23 @@
 {% endblock %}
 
 {% block content %}
-<div class="rounded-lg shadow-md p-6">
-    <h1 class="text-3xl font-bold  mb-6">Annuaire des Alumni</h1>
+<div class="rounded-4xl shadow-md p-6">
+    <h1 class="text-3xl font-bold  mb-6">Annuaire des amicaliste</h1>
 
     <!-- Search and Filters -->
-    <div class="fieldset mb-8 bg-base-100 p-4 rounded-lg card shadow-sm">
+    <div class="fieldset mb-8 bg-base-100 p-4 rounded-3xl card shadow-sm">
         <h2 class="fieldset-legend text-xl font-bold  mb-4">Recherche et filtres</h2>
         <form id="search-form" class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
                 <label for="query" class="block text-sm font-medium  mb-1">Recherche</label>
                 <input type="text" id="query" name="query" placeholder="Nom, structure, fonction..."
-                       class="input block w-full rounded-md  shadow-sm  focus:ring-blue-500">
+                       class="input block w-full rounded-xl  shadow-sm  focus:ring-blue-500">
             </div>
 
             <div>
                 <label for="promotion-filter" class="block text-sm font-medium  mb-1">Promotion</label>
                 <select id="promotion-filter" name="promotion"
-                        class="input block w-full rounded-md  shadow-sm  focus:ring-blue-500">
+                        class="select block w-full rounded-xl  shadow-sm  focus:ring-blue-500">
                     <option value="">Toutes</option>
                     {% for promotion in promotions %}
                         <option value="{{ promotion }}">{{ promotion }}</option>
@@ -50,7 +50,7 @@
             <div>
                 <label for="specialite-filter" class="block text-sm font-medium  mb-1">Spécialité</label>
                 <select id="specialite-filter" name="specialite"
-                        class="input block w-full rounded-md  shadow-sm  focus:ring-blue-500">
+                        class="select block w-full rounded-xl  shadow-sm  focus:ring-blue-500">
                     <option value="">Toutes</option>
                     {% for specialite in specialites %}
                         <option value="{{ specialite }}">{{ specialite }}</option>
@@ -61,7 +61,7 @@
             <div>
                 <label for="statut-filter" class="block text-sm font-medium  mb-1">Statut professionnel</label>
                 <select id="statut-filter" name="statut"
-                        class="input block w-full rounded-md  shadow-sm  focus:ring-blue-500">
+                        class="select block w-full rounded-xl  shadow-sm  focus:ring-blue-500">
                     <option value="">Tous</option>
                     {% for statut in statuts %}
                         <option value="{{ statut }}">{{ statut }}</option>
@@ -70,7 +70,7 @@
             </div>
 
             <div class="md:col-span-4 flex justify-end">
-                <button type="submit" class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-md">
+                <button type="submit" class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-xl">
                     Rechercher
                 </button>
             </div>
@@ -80,7 +80,7 @@
     <!-- Profiles Grid -->
     <div id="profiles-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {% for profile in profiles %}
-            <div class="profile-card rounded-lg shadow-md overflow-hidden border border-base-200">
+            <div class="profile-card rounded-3xl bg-base-100 shadow-md overflow-hidden border border-base-200">
                 <div class="p-4">
                     <div class="flex items-center mb-4">
                         <div class="flex-shrink-0 h-16 w-16">
@@ -146,7 +146,7 @@
 
                     <div class="flex justify-end">
                         <a href="{{ url_for('profile.view_user_profile', user_id=profile.user_id) }}"
-                           class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                           class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-xl text-white bg-primary hover:bg-blue-700">
                             Voir le profil
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />

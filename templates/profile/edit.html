@@ -16,20 +16,20 @@
                     <label for="nom_prenoms" class="block text-sm font-medium text-gray-700">Nom et prénoms *</label>
                     <input type="text" id="nom_prenoms" name="nom_prenoms" required
                            value="{{ profile.nom_prenoms }}"
-                           class="input block w-full shadow-sm  focus:ring-blue-500">
+                           class="input input-accent block w-full shadow-sm  focus:ring-blue-500">
                 </div>
 
                 <div>
                     <label for="email" class="block text-sm font-medium text-gray-700">Email *</label>
                     <input type="email" id="email" name="email" required
                            value="{{ profile.email }}"
-                           class="input block w-full shadow-sm  focus:ring-blue-500">
+                           class="input input-accent block w-full shadow-sm  focus:ring-blue-500">
                 </div>
 
                 <div>
                     <label for="promotion" class="block text-sm font-medium text-gray-700">Promotion</label>
                     <select id="promotion" name="promotion"
-                            class="input block w-full shadow-sm  focus:ring-blue-500">
+                            class="select select-info block w-full shadow-sm  focus:ring-blue-500">
                         <option value="">-- Sélectionner --</option>
                         {% for promotion in promotions %}
                             <option value="{{ promotion.name }}" {% if profile.promotion == promotion %}selected{% endif %}>
@@ -42,7 +42,7 @@
                 <div>
                     <label for="specialite" class="block text-sm font-medium text-gray-700">Spécialité</label>
                     <select id="specialite" name="specialite"
-                            class="input block w-full shadow-sm  focus:ring-blue-500">
+                            class="select select-info block w-full shadow-sm  focus:ring-blue-500">
                         <option value="">-- Sélectionner --</option>
                         {% for specialite in specialites %}
                             <option value="{{ specialite.name }}" {% if profile.specialite == specialite %}selected{% endif %}>
@@ -56,27 +56,27 @@
                     <label for="structure" class="block text-sm font-medium text-gray-700">Structure (employeur)</label>
                     <input type="text" id="structure" name="structure"
                            value="{{ profile.structure or '' }}"
-                           class="input block w-full rounded-md  shadow-sm  focus:ring-blue-500">
+                           class="input input-accent block w-full  shadow-sm  focus:ring-blue-500">
                 </div>
 
                 <div>
                     <label for="fonction" class="block text-sm font-medium text-gray-700">Fonction</label>
                     <input type="text" id="fonction" name="fonction"
                            value="{{ profile.fonction or '' }}"
-                           class="input block w-full shadow-sm  focus:ring-blue-500">
+                           class="input input-accent block w-full shadow-sm  focus:ring-blue-500">
                 </div>
 
                 <div>
                     <label for="localite_residence" class="block text-sm font-medium text-gray-700">Localité de résidence</label>
                     <input type="text" id="localite_residence" name="localite_residence"
                            value="{{ profile.localite_residence or '' }}"
-                           class="input block w-full shadow-sm  focus:ring-blue-500">
+                           class="input input-accent block w-full shadow-sm  focus:ring-blue-500">
                 </div>
 
                 <div>
                     <label for="statut_professionnel" class="block text-sm font-medium text-gray-700">Statut professionnel</label>
                     <select id="statut_professionnel" name="statut_professionnel"
-                            class="input block w-full shadow-sm  focus:ring-blue-500">
+                            class="select select-info block w-full shadow-sm  focus:ring-blue-500">
                         <option value="">-- Sélectionner --</option>
                         {% for statut in statuts %}
                             <option value="{{ statut.name }}" {% if profile.statut_professionnel == statut %}selected{% endif %}>
@@ -104,7 +104,7 @@
                     <label for="numero_whatsapp" class="block text-sm font-medium text-gray-700">Numéro WhatsApp</label>
                     <input type="tel" id="numero_whatsapp" name="numero_whatsapp"
                            value="{{ profile.numero_whatsapp or '' }}"
-                           class="input block w-full shadow-sm  focus:ring-blue-500">
+                           class="input input-accent block w-full shadow-sm  focus:ring-blue-500">
                     <p class="mt-1 text-xs text-gray-500">Format: +XXX XXXXXXXXX (minimum 10 chiffres)</p>
                 </div>
 
@@ -112,14 +112,14 @@
                     <label for="autres_numeros" class="block text-sm font-medium text-gray-700">Autres numéros</label>
                     <input type="text" id="autres_numeros" name="autres_numeros"
                            value="{{ profile.autres_numeros or '' }}"
-                           class="input block w-full shadow-sm  focus:ring-blue-500">
+                           class="input input-accent block w-full shadow-sm  focus:ring-blue-500">
                 </div>
 
                 <div>
                     <label for="compte_linkedin" class="block text-sm font-medium text-gray-700">Compte LinkedIn</label>
                     <input type="url" id="compte_linkedin" name="compte_linkedin"
                            value="{{ profile.compte_linkedin or '' }}"
-                           class="input block w-full shadow-sm  focus:ring-blue-500">
+                           class="input input-accent block w-full shadow-sm  focus:ring-blue-500">
                 </div>
 
                 <div>
@@ -133,7 +133,7 @@
                             </div>
                         {% endif %}
                         <input type="file" id="photo" name="photo" accept="image/*"
-                               class="input block w-full shadow-sm  focus:ring-blue-500">
+                               class="input input-accent block w-full shadow-sm  focus:ring-blue-500">
                     </div>
                     <p class="mt-1 text-xs text-gray-500">Formats acceptés: PNG, JPG, JPEG, GIF</p>
                 </div>
@@ -150,7 +150,7 @@
                             </div>
                         {% endif %}
                         <input type="file" id="cv" name="cv" accept="application/pdf"
-                               class="input block w-full shadow-sm  focus:ring-blue-500">
+                               class="input input-accent block w-full shadow-sm  focus:ring-blue-500">
                     </div>
                     <p class="mt-1 text-xs text-gray-500">Format accepté: PDF uniquement</p>
                 </div>
@@ -158,7 +158,7 @@
                 <div>
                     <label for="biographie" class="block text-sm font-medium text-gray-700">Biographie</label>
                     <textarea id="biographie" name="biographie" rows="5"
-                              class="textarea w-full">{{ profile.biographie or '' }}</textarea>
+                              class="textarea w-full textarea-accent">{{ profile.biographie or '' }}</textarea>
                 </div>
             </div>
         </div>
