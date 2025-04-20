@@ -18,10 +18,10 @@
 {% endblock %}
 
 {% block content %}
-<div class=" rounded-lg shadow-md p-6 bg-base-100">
+<div class=" rounded-3xl shadow-md p-6 bg-base-100">
     <div class="flex justify-between items-center mb-6">
-        <h1 class="text-3xl font-bold ">Administration</h1>
-        <a href="{{ url_for('admin.add_member') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center">
+        <h1 class="text-3xl font-bold ">Page d'administration</h1>
+        <a href="{{ url_for('admin.add_member') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
             </svg>
@@ -36,13 +36,12 @@
             <div class="search-container">
                 <label for="query" class="block text-sm font-medium  mb-1">Recherche</label>
                 <input type="text" id="query" name="query" placeholder="Nom, structure, fonction..."
-                       class="input block w-full rounded-md  shadow-sm  focus:ring-blue-500">
+                       class="input block w-full rounded-xl  shadow-sm  focus:ring-blue-500">
             </div>
-
             <div>
                 <label for="promotion-filter" class="block text-sm font-medium text-gray-700 mb-1">Promotion</label>
                 <select id="promotion-filter" name="promotion"
-                        class="input block w-full rounded-md  shadow-sm  focus:ring-blue-500">
+                        class="input block w-full rounded-xl  shadow-sm  focus:ring-blue-500">
                     <option value="">Toutes</option>
                     {% for promotion in promotions %}
                         <option value="{{ promotion }}">{{ promotion }}</option>
@@ -53,7 +52,7 @@
             <div>
                 <label for="specialite-filter" class="block text-sm font-medium text-gray-700 mb-1">Spécialité</label>
                 <select id="specialite-filter" name="specialite"
-                        class="input block w-full rounded-md  shadow-sm  focus:ring-blue-500">
+                        class="input block w-full rounded-xl  shadow-sm  focus:ring-blue-500">
                     <option value="">Toutes</option>
                     {% for specialite in specialites %}
                         <option value="{{ specialite }}">{{ specialite }}</option>
@@ -64,7 +63,7 @@
             <div>
                 <label for="statut-filter" class="block text-sm font-medium text-gray-700 mb-1">Statut professionnel</label>
                 <select id="statut-filter" name="statut"
-                        class="input block w-full rounded-md  shadow-sm  focus:ring-blue-500">
+                        class="input block w-full rounded-xl  shadow-sm  focus:ring-blue-500">
                     <option value="">Tous</option>
                     {% for statut in statuts %}
                         <option value="{{ statut }}">{{ statut }}</option>
@@ -73,7 +72,7 @@
             </div>
 
             <div class="md:col-span-4 flex justify-end">
-                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl">
                     Rechercher
                 </button>
             </div>
