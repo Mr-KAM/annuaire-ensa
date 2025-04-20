@@ -3,7 +3,7 @@
 {% block title %}Ajouter un membre - Administration{% endblock %}
 
 {% block content %}
-<div class=" rounded-xl bg-base-100 shadow-md p-8">
+<div class=" rounded-3xl bg-base-100 shadow-md p-8">
     <div class="flex items-center justify-between mb-6">
         <h1 class="text-3xl font-bold text-gray-800">Ajouter un membre</h1>
         <a href="{{ url_for('admin.dashboard') }}" class="text-blue-600 hover:text-blue-800 flex items-center">
@@ -35,7 +35,7 @@
                 <div>
                     <label for="promotion" class="block text-sm font-medium text-gray-700">Promotion</label>
                     <select id="promotion" name="promotion"
-                            class="input block w-full rounded-xl  shadow-sm  focus:ring-blue-500">
+                            class="input block w-full rounded-xl  shadow-sm  focus:ring-blue-500" required>
                         <option value="">-- Sélectionner --</option>
                         {% for promotion in promotions %}
                             <option value="{{ promotion.name }}">{{ promotion.value }}</option>
@@ -46,7 +46,7 @@
                 <div>
                     <label for="specialite" class="block text-sm font-medium text-gray-700">Spécialité</label>
                     <select id="specialite" name="specialite"
-                            class="input block w-full rounded-xl  shadow-sm  focus:ring-blue-500">
+                            class="input block w-full rounded-xl  shadow-sm  focus:ring-blue-500" required>
                         <option value="">-- Sélectionner --</option>
                         {% for specialite in specialites %}
                             <option value="{{ specialite.name }}">{{ specialite.value }}</option>
@@ -75,7 +75,7 @@
                 <div>
                     <label for="statut_professionnel" class="block text-sm font-medium text-gray-700">Statut professionnel</label>
                     <select id="statut_professionnel" name="statut_professionnel"
-                            class="input block w-full rounded-xl  shadow-sm  focus:ring-blue-500">
+                            class="input block w-full rounded-xl  shadow-sm  focus:ring-blue-500" required>
                         <option value="">-- Sélectionner --</option>
                         {% for statut in statuts %}
                             <option value="{{ statut.name }}">{{ statut.value }}</option>
