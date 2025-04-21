@@ -73,12 +73,14 @@ def create_app():
     from routes.admin import admin_bp
     from routes.annuaire import annuaire_bp
     from routes.index import index_bp
+    from routes.info import info_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(profile_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(annuaire_bp)
     app.register_blueprint(index_bp)
+    app.register_blueprint(info_bp)
 
     # Fonctions utilitaires et processeurs de contexte
     @app.template_filter('format_date')
