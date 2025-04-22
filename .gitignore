@@ -480,3 +480,4 @@ env.bak/
 *.env.staging
 *.env.production
 *.
+instance/annuaire.db
