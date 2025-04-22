@@ -463,6 +463,7 @@ def import_members():
                     # Vérifier les champs requis
                     missing_fields = [field for field in required_fields if field not in row or not row[field]]
                     if missing_fields:
+                        print("Error : champs manquants email et nom_prenoms")
                         results['errors'].append(f"Ligne {index}: champs manquants: {', '.join(missing_fields)}")
                         continue
 
@@ -479,43 +480,53 @@ def import_members():
                     new_user.set_password(password)
                     db.session.add(new_user)
                     db.session.flush()  # Pour obtenir l'ID de l'utilisateur
+                    print("Utilisateur ajouté avec succès: " + email + " / " + password)
 
                     # Créer un profil pour l'utilisateur
+                    print("Creation d'un profile utilisateur")
                     new_profile = UserProfile(
                         user_id=new_user.id,
-                        nom_prenoms=row['nom_prenoms'].strip(),
+                        nom_prenoms=row['nom_prenoms'].strip() if row['nom_prenoms'] is not None else "NOM ET PRENOMS A CORRIGER",
                         email=email
                     )
+                    print("Profile utilisateur créé avec succès")
 
                     # Traiter les champs optionnels
                     if 'promotion' in row and row['promotion']:
+                        print("La colonne promotion existe")
                         try:
-                            promotion_value = row['promotion'].strip()
+                            promotion_value = row['promotion'].strip() if row['promotion'] is not None else "2ème PROMOTION"
                             # Vérifier si la valeur correspond à une énumération
                             for enum_value in PromotionEnum:
                                 if enum_value.value == promotion_value:
                                     new_profile.promotion = enum_value
                                     break
+                            print("La promotion est correcte")
+                            print("promotion ajouté avec succès")
                         except Exception as e:
                             print(f"Erreur lors du traitement de la promotion: {e}")
 
                     if 'specialite' in row and row['specialite']:
                         try:
-                            specialite_value = row['specialite'].strip()
+                            specialite_value = row['specialite'].strip() if row['specialite'] is not None else "AGRO ECONOMIE"
                             for enum_value in SpecialiteEnum:
                                 if enum_value.value == specialite_value:
                                     new_profile.specialite = enum_value
                                     break
+                            print("La spécialité est correcte")
+                            print("📄specialité ajouté avec succès")
                         except Exception as e:
                             print(f"Erreur lors du traitement de la spécialité: {e}")
 
                     if 'statut_professionnel' in row and row['statut_professionnel']:
                         try:
-                            statut_value = row['statut_professionnel'].strip()
+                            statut_value = row['statut_professionnel'].strip() if row['statut_professionnel'] is not None else "Autre"
                             for enum_value in StatutProfessionnelEnum:
                                 if enum_value.value == statut_value:
                                     new_profile.statut_professionnel = enum_value
                                     break
+                            print("Le statut professionnel est correcte")
+                            print("🧑🏽‍🎓statut professionnel ajouté avec succès")
                         except Exception as e:
                             print(f"Erreur lors du traitement du statut professionnel: {e}")
 
@@ -529,10 +540,16 @@ def import_members():
                         'compte_linkedin': 'compte_linkedin',
                         'biographie': 'biographie'
                     }
-
+                    # Traitement de chaque champ
+                    # Vérifier si le champ existe dans la ligne et s'il n'est pas vide
+                    print("⚙️ Debut Traitement des champs simples")
+                    print(field_mapping.items())
                     for csv_field, model_field in field_mapping.items():
                         if csv_field in row and row[csv_field]:
-                            setattr(new_profile, model_field, row[csv_field].strip())
+                            if isinstance(row[csv_field], str):
+                                row_csv_field = row[csv_field].strip()
+                            print(f"Valeur de {model_field}: {row_csv_field} de type {type(row_csv_field)}")
+                            setattr(new_profile, model_field, row_csv_field)
 
                     # Champ booléen
                     if 'is_mentor_available' in row:
@@ -540,7 +557,7 @@ def import_members():
                         if isinstance(value, bool):
                             new_profile.is_mentor_available = value
                         elif isinstance(value, str):
-                            value = value.lower().strip()
+                            value = value.lower().strip() if value is not None else "false"
                             new_profile.is_mentor_available = value in ('true', 'oui', 'yes', '1')
 
                     db.session.add(new_profile)
@@ -572,6 +589,7 @@ def import_members():
                     results['success'] += 1
 
                 except Exception as e:
+                    print(e)
                     results['errors'].append(f"Ligne {index}: {str(e)}")
                     db.session.rollback()
 
@@ -580,9 +598,11 @@ def import_members():
                 db.session.commit()
                 flash(f"{results['success']} membre(s) importé(s) avec succès. {len(results['errors'])} erreur(s).", 'success')
             else:
+                db.session.rollback()
                 flash("Aucun membre n'a été importé. Veuillez vérifier les erreurs.", 'danger')
 
         except Exception as e:
+            db.session.rollback()
             results['errors'].append(f"Erreur lors du traitement du fichier: {str(e)}")
             flash(f"Erreur lors du traitement du fichier: {str(e)}", 'danger')
 

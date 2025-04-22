@@ -29,7 +29,7 @@
                 <div>
                     <label for="promotion" class="block text-sm font-medium text-gray-700">Promotion</label>
                     <select id="promotion" name="promotion"
-                            class="select select-info block w-full shadow-sm  focus:ring-blue-500">
+                            class="select select-info block w-full shadow-sm  focus:ring-blue-500" required>
                         <option value="">-- Sélectionner --</option>
                         {% for promotion in promotions %}
                             <option value="{{ promotion.name }}" {% if profile.promotion == promotion %}selected{% endif %}>
@@ -42,7 +42,7 @@
                 <div>
                     <label for="specialite" class="block text-sm font-medium text-gray-700">Spécialité</label>
                     <select id="specialite" name="specialite"
-                            class="select select-info block w-full shadow-sm  focus:ring-blue-500">
+                            class="select select-info block w-full shadow-sm  focus:ring-blue-500" required>
                         <option value="">-- Sélectionner --</option>
                         {% for specialite in specialites %}
                             <option value="{{ specialite.name }}" {% if profile.specialite == specialite %}selected{% endif %}>
@@ -76,7 +76,7 @@
                 <div>
                     <label for="statut_professionnel" class="block text-sm font-medium text-gray-700">Statut professionnel</label>
                     <select id="statut_professionnel" name="statut_professionnel"
-                            class="select select-info block w-full shadow-sm  focus:ring-blue-500">
+                            class="select select-info block w-full shadow-sm  focus:ring-blue-500" required>
                         <option value="">-- Sélectionner --</option>
                         {% for statut in statuts %}
                             <option value="{{ statut.name }}" {% if profile.statut_professionnel == statut %}selected{% endif %}>

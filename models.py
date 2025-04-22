@@ -129,6 +129,7 @@ class PromotionEnum(enum.Enum):
     ENSA_118 = "118ème PROMOTION"
     ENSA_119 = "119ème PROMOTION"
     ENSA_120 = "120ème PROMOTION"
+    INDEFINI= "INDEFINIE"
 
 class SpecialiteEnum(enum.Enum):
     AGRO_ECONOMIE = "AGRO ECONOMIE"
@@ -145,6 +146,7 @@ class SpecialiteEnum(enum.Enum):
     PRODUCTION_VEGETALE = "PRODUCTION VEGETALE"
     PRODUCTION_ANIMALE = "PRODUCTION ANIMALE"
     DEFENCE_DES_CULTURES = "DEFENSE DES CULTURES"
+    INDEFINIE = "INDEFINIE"
 class StatutProfessionnelEnum(enum.Enum):
     ETUDIANT = "Étudiant-Cadet en formation"
     EMPLOYE_PUBLIQUE = "Employé de la fonction publique"
@@ -153,6 +155,8 @@ class StatutProfessionnelEnum(enum.Enum):
     FREELANCE = "Freelance"
     RECHERCHE_EMPLOI = "En recherche d'emploi"
     DIPLOME_ETUDIANTS = "Diplômé en poursuite des études"
+    RETRAITE = "Retraité"
+    AUTRE = "Autre"
 
 class RoleEnum(enum.Enum):
     SUPER_ADMIN = "super_admin"
