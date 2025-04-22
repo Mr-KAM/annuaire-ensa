@@ -37,6 +37,27 @@ pip install -r requirements.txt
 python app.py
 ```
 
+## Docker
+
+Vous pouvez également utiliser Docker pour exécuter l'application:
+
+```bash
+# Construire l'image Docker
+docker build -t annuaire-ensa .
+
+# Lancer le conteneur
+docker run -p 5000:5000 \
+  -e PUSHBULLET_KEY="votre_clé_pushbullet" \
+  -e EMAIL_MESSAGERIE="votre_email" \
+  -e EMAIL_MESSAGERIE_PASSWORD="votre_mot_de_passe" \
+  -v ./instance:/app/instance \
+  annuaire-ensa
+```
+
+Accédez à l'application à l'adresse http://localhost:5000
+
+Pour persister les données, un volume Docker est utilisé pour le dossier `instance` contenant la base de données SQLite.
+
 creer un fichier
 `.env`
 

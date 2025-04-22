@@ -1,14 +1,32 @@
-# Use the official Python image as the base image
-FROM python:3.12.4
+FROM python:3.11-slim
 
-# Set the working directory in the container
-WORKDIR ./
+WORKDIR /app
 
-# Copy the application files into the working directory
-# COPY ./app
+# Install dependencies
+COPY requirements.txt .
 
-# Install the application dependencies
-RUN pip install -r requirements.txt
+# Remove Windows-specific package and install dependencies
+RUN grep -v "pywin32" requirements.txt > requirements_docker.txt && \
+    pip install --no-cache-dir -r requirements_docker.txt && \
+    rm requirements_docker.txt
 
-# Define the entry point for the container
+# Create upload directories
+RUN mkdir -p /app/static/uploads/photos && \
+    mkdir -p /app/static/uploads/cv
+
+# Copy application code
+COPY . .
+
+# Create volume for database persistence
+VOLUME ["/app/instance"]
+
+# Environment variables (these will be overridden at runtime)
+# ENV PUSHBULLET_KEY="your_pushbullet_key" \
+#     EMAIL_MESSAGERIE="your_email" \
+#     EMAIL_MESSAGERIE_PASSWORD="your_password"
+
+# Expose port
+EXPOSE 5000
+
+# Run the application
 CMD ["python", "app.py"]
