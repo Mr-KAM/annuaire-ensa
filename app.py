@@ -22,4 +22,4 @@ if __name__ == '__main__':
             db.session.commit()
             print("Admin créé avec succès: admin@example.com / admin123")
 
-    app.run(debug=True)
+    app.run(debug=False, host="0.0.0.0")
