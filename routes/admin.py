@@ -364,6 +364,51 @@ def reset_password(user_id):
 
     return jsonify({'success': True, 'message': "Le mot de passe a été réinitialisé et envoyé à l'utilisateur."})
 
+@admin_bp.route('/manage-admins', methods=['GET'])
+@login_required
+def manage_admins():
+    # Vérifier si l'utilisateur est un super administrateur
+    if not current_user.is_super_admin:
+        flash("Cette page est réservée aux super administrateurs.", 'danger')
+        return redirect(url_for('admin.dashboard'))
+
+    # Récupérer tous les utilisateurs ayant un profil
+    users_with_profiles = db.session.query(User, UserProfile) \
+        .join(UserProfile, User.id == UserProfile.user_id) \
+        .all()
+
+    return render_template('admin/manage_admins.html', users=users_with_profiles)
+
+@admin_bp.route('/toggle-admin/<int:user_id>', methods=['POST'])
+@login_required
+def toggle_admin(user_id):
+    # Vérifier si l'utilisateur est un super administrateur
+    if not current_user.is_super_admin:
+        return jsonify({'success': False, 'message': "Cette action est réservée aux super administrateurs."}), 403
+
+    # Empêcher de modifier son propre rôle
+    if current_user.id == user_id:
+        return jsonify({'success': False, 'message': "Vous ne pouvez pas modifier votre propre rôle."}), 400
+
+    # Récupérer l'utilisateur
+    user = User.query.get_or_404(user_id)
+
+    # Vérifier que l'utilisateur n'est pas déjà un super administrateur
+    if user.role == RoleEnum.SUPER_ADMIN:
+        return jsonify({'success': False, 'message': "Vous ne pouvez pas modifier le rôle d'un super administrateur."}), 400
+
+    # Modifier le rôle de l'utilisateur
+    if user.role == RoleEnum.ADMIN:
+        user.role = RoleEnum.USER
+        message = "Les droits d'administration ont été retirés."
+    else:
+        user.role = RoleEnum.ADMIN
+        message = "Les droits d'administration ont été accordés."
+
+    db.session.commit()
+
+    return jsonify({'success': True, 'message': message, 'is_admin': user.role == RoleEnum.ADMIN})
+
 @admin_bp.route('/import-members', methods=['GET', 'POST'])
 @login_required
 def import_members():

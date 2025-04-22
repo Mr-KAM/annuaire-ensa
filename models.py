@@ -155,6 +155,7 @@ class StatutProfessionnelEnum(enum.Enum):
     DIPLOME_ETUDIANTS = "Diplômé en poursuite des études"
 
 class RoleEnum(enum.Enum):
+    SUPER_ADMIN = "super_admin"
     ADMIN = "admin"
     USER = "user"
 
@@ -192,7 +193,11 @@ class User(db.Model):
 
     @property
     def is_admin(self):
-        return self.role == RoleEnum.ADMIN
+        return self.role == RoleEnum.ADMIN or self.role == RoleEnum.SUPER_ADMIN
+
+    @property
+    def is_super_admin(self):
+        return self.role == RoleEnum.SUPER_ADMIN
 
     def __repr__(self):
         return f"<User(email='{self.email}', role='{self.role}')>"

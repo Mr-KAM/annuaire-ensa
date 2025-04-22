@@ -13,6 +13,15 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
 
+        # Création d'un super admin par défaut si aucun n'existe
+        super_admin = User.query.filter_by(role=RoleEnum.SUPER_ADMIN).first()
+        if not super_admin:
+            super_admin = User(email='superadmin@example.com', role=RoleEnum.SUPER_ADMIN) # Pour les test. Ces identifiants seront rétiré en mode production
+            super_admin.set_password('superadmin123')
+            db.session.add(super_admin)
+            db.session.commit()
+            print("Super Admin créé avec succès: superadmin@example.com / superadmin123")
+
         # Création d'un admin par défaut si aucun n'existe
         admin = User.query.filter_by(role=RoleEnum.ADMIN).first()
         if not admin:
