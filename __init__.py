@@ -56,7 +56,7 @@ def sendSms(pb, message, contact_number):
     """
 
     # Récupérer la clé API Pushbullet depuis l'objet pb
-    api_key = os.environ["PUSHBULLET_KEY"]
+    api_key = pb.api_key
 
     # Récupérer le téléphone qui peut envoyer les SMS
     phone = next((device for device in pb.devices if device.has_sms), None)
