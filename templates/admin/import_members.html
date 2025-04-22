@@ -1,0 +1,243 @@
+{% extends 'base.html' %}
+
+{% block title %}Importer des membres - Administration{% endblock %}
+
+{% block extra_css %}
+<style>
+    .error-list {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+    .template-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .template-table th, .template-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+    .template-table th {
+        background-color: #f2f2f2;
+    }
+    .note {
+        font-style: italic;
+        color: #666;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="rounded-3xl shadow-md p-6 bg-base-100">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold">Importer des membres</h1>
+        <a href="{{ url_for('admin.dashboard') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-xl flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Retour au tableau de bord
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Formulaire d'importation -->
+        <div class="bg-base-200 p-6 rounded-2xl">
+            <h2 class="text-xl font-bold mb-4">Télécharger un fichier</h2>
+
+            <form method="POST" enctype="multipart/form-data" class="space-y-4">
+                <div>
+                    <label for="file" class="block text-sm font-medium mb-1">Fichier CSV ou Excel</label>
+                    <input type="file" name="file" id="file" accept=".csv, .xlsx, .xls"
+                           class="input w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
+                    <p class="text-sm text-gray-500 mt-1">
+                        Formats acceptés: .csv, .xlsx, .xls
+                    </p>
+                </div>
+
+                <div class="flex justify-end">
+                    <button type="submit" class="bg-primary hover:bg-blue-700 text-white px-4 py-2 rounded-xl">
+                        Importer les membres
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-base-200 p-6 rounded-2xl">
+            <h2 class="text-xl font-bold mb-4">Instructions</h2>
+
+            <div class="space-y-4">
+                <p>
+                    Pour importer plusieurs membres en une seule fois, préparez un fichier CSV ou Excel avec les colonnes suivantes:
+                </p>
+
+                <div class="overflow-x-auto">
+                    <table class="template-table">
+                        <thead>
+                            <tr>
+                                <th>Nom de colonne</th>
+                                <th>Requis</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>email</td>
+                                <td>Oui</td>
+                                <td>Adresse email de l'utilisateur (doit être unique)</td>
+                            </tr>
+                            <tr>
+                                <td>nom_prenoms</td>
+                                <td>Oui</td>
+                                <td>Nom et prénoms de l'utilisateur</td>
+                            </tr>
+                            <tr>
+                                <td>promotion</td>
+                                <td>Non</td>
+                                <td>Promotion (doit correspondre à une des valeurs existantes)</td>
+                            </tr>
+                            <tr>
+                                <td>specialite</td>
+                                <td>Non</td>
+                                <td>Spécialité (doit correspondre à une des valeurs existantes)</td>
+                            </tr>
+                            <tr>
+                                <td>structure</td>
+                                <td>Non</td>
+                                <td>Structure/Entreprise actuelle</td>
+                            </tr>
+                            <tr>
+                                <td>fonction</td>
+                                <td>Non</td>
+                                <td>Fonction/Poste actuel</td>
+                            </tr>
+                            <tr>
+                                <td>localite_residence</td>
+                                <td>Non</td>
+                                <td>Ville/Pays de résidence</td>
+                            </tr>
+                            <tr>
+                                <td>numero_whatsapp</td>
+                                <td>Non</td>
+                                <td>Numéro WhatsApp (format international avec +)</td>
+                            </tr>
+                            <tr>
+                                <td>autres_numeros</td>
+                                <td>Non</td>
+                                <td>Autres numéros de téléphone</td>
+                            </tr>
+                            <tr>
+                                <td>compte_linkedin</td>
+                                <td>Non</td>
+                                <td>URL du profil LinkedIn</td>
+                            </tr>
+                            <tr>
+                                <td>biographie</td>
+                                <td>Non</td>
+                                <td>Texte de présentation/biographie</td>
+                            </tr>
+                            <tr>
+                                <td>is_mentor_available</td>
+                                <td>Non</td>
+                                <td>Disponible comme mentor (true/false, oui/non, yes/no, 1/0)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div>
+                    <h3 class="font-bold mb-2">Valeurs acceptées pour les champs spécifiques :</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <h4 class="font-semibold mb-1">Promotions :</h4>
+                            <ul class="list-disc pl-5 text-sm">
+                                {% for promotion in promotions %}
+                                    <li>{{ promotion }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold mb-1">Spécialités :</h4>
+                            <ul class="list-disc pl-5 text-sm">
+                                {% for specialite in specialites %}
+                                    <li>{{ specialite }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold mb-1">Statuts professionnels :</h4>
+                            <ul class="list-disc pl-5 text-sm">
+                                {% for statut in statuts %}
+                                    <li>{{ statut }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="note">
+                    Note: Un mot de passe aléatoire sera généré pour chaque utilisateur créé. Un email sera envoyé à chaque adresse email avec les identifiants de connexion.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Résultats de l'importation (si disponibles) -->
+    {% if results and results.total > 0 %}
+    <div class="mt-8 bg-base-200 p-6 rounded-2xl">
+        <h2 class="text-xl font-bold mb-4">Résultats de l'importation</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div class="p-4 rounded-lg bg-base-100 shadow-sm">
+                <h3 class="font-bold text-lg mb-2">Total</h3>
+                <p class="text-3xl font-bold">{{ results.total }}</p>
+                <p class="text-sm text-gray-500">lignes traitées</p>
+            </div>
+
+            <div class="p-4 rounded-lg bg-green-50 shadow-sm">
+                <h3 class="font-bold text-lg mb-2 text-green-700">Succès</h3>
+                <p class="text-3xl font-bold text-green-700">{{ results.success }}</p>
+                <p class="text-sm text-green-600">membres importés</p>
+            </div>
+
+            <div class="p-4 rounded-lg bg-red-50 shadow-sm">
+                <h3 class="font-bold text-lg mb-2 text-red-700">Erreurs</h3>
+                <p class="text-3xl font-bold text-red-700">{{ results.errors|length }}</p>
+                <p class="text-sm text-red-600">lignes en erreur</p>
+            </div>
+        </div>
+
+        {% if results.errors %}
+        <div>
+            <h3 class="font-bold mb-2">Détail des erreurs:</h3>
+            <div class="error-list p-4 rounded-lg bg-red-50">
+                <ul class="list-disc pl-5">
+                    {% for error in results.errors %}
+                        <li class="text-red-700">{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Exemple de fichier à télécharger -->
+    <div class="mt-8">
+        <h2 class="text-xl font-bold mb-4">Exemple de fichier</h2>
+
+        <div class="p-4 rounded-lg bg-base-200">
+            <p class="mb-4">Voici un exemple de contenu pour votre fichier CSV :</p>
+
+            <pre class="p-4 bg-base-100 rounded-lg overflow-x-auto text-sm">
+email,nom_prenoms,promotion,specialite,structure,fonction,localite_residence,numero_whatsapp,compte_linkedin,is_mentor_available
+john.doe@example.com,John Doe,2020,Informatique,Acme Inc,Développeur,Paris,+33123456789,https://linkedin.com/in/johndoe,true
+jane.smith@example.com,Jane Smith,2021,Marketing,XYZ Corp,Chef de projet,Lyon,+33987654321,https://linkedin.com/in/janesmith,false</pre>
+
+            <p class="mt-4 text-sm text-gray-500">
+                Note: Vous pouvez copier ce contenu et le coller dans un fichier texte, puis l'enregistrer avec l'extension .csv, ou l'utiliser comme référence pour créer un fichier Excel.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

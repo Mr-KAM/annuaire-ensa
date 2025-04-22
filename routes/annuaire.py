@@ -48,13 +48,31 @@ def search():
         )
 
     if promotion_filter:
-        query = query.filter(UserProfile.promotion == promotion_filter)
+        # Convertir la valeur du filtre en enum
+        try:
+            promotion_enum = PromotionEnum(promotion_filter)
+            query = query.filter(UserProfile.promotion == promotion_enum)
+        except ValueError:
+            # Si la conversion échoue, ignorer ce filtre
+            pass
 
     if specialite_filter:
-        query = query.filter(UserProfile.specialite == specialite_filter)
+        # Convertir la valeur du filtre en enum
+        try:
+            specialite_enum = SpecialiteEnum(specialite_filter)
+            query = query.filter(UserProfile.specialite == specialite_enum)
+        except ValueError:
+            # Si la conversion échoue, ignorer ce filtre
+            pass
 
     if statut_filter:
-        query = query.filter(UserProfile.statut_professionnel == statut_filter)
+        # Convertir la valeur du filtre en enum
+        try:
+            statut_enum = StatutProfessionnelEnum(statut_filter)
+            query = query.filter(UserProfile.statut_professionnel == statut_enum)
+        except ValueError:
+            # Si la conversion échoue, ignorer ce filtre
+            pass
 
     # Exécuter la requête
     profiles = query.all()
@@ -67,8 +85,11 @@ def search():
             'nom_prenoms': profile.nom_prenoms,
             'promotion': profile.promotion.value if profile.promotion else '',
             'specialite': profile.specialite.value if profile.specialite else '',
-            'structure': profile.structure,
-            'fonction': profile.fonction,
+            'structure': profile.structure or '',
+            'fonction': profile.fonction or '',
+            'localite_residence': profile.localite_residence or '',
+            'is_mentor_available': profile.is_mentor_available,
+            'statut_professionnel': profile.statut_professionnel.value if profile.statut_professionnel else '',
             'photo_url': f'/static/uploads/photos/{profile.photo_filename}' if profile.photo_filename else '/static/assets/images/avatars/avatar-2.jpg',
             'profile_url': f'/profile/user/{profile.user_id}'
         })

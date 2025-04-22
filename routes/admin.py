@@ -1,10 +1,14 @@
 import os
 import random
 import string
+import csv
+import pandas as pd
+import io
+from sqlalchemy import or_
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, current_app
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
-from __init__ import db, allowed_file, mail,send_mail ,pb, sendSms
+from __init__ import db, allowed_file, mail, send_mail, pb, sendSms
 from models import User, UserProfile, RoleEnum, PromotionEnum, SpecialiteEnum, StatutProfessionnelEnum
 import uuid
 
@@ -45,7 +49,92 @@ def dashboard():
     # Récupérer tous les profils
     profiles = UserProfile.query.all()
 
-    return render_template('admin/dashboard.html', profiles=profiles)
+    # Récupérer les options pour les filtres
+    promotions = [promotion.value for promotion in PromotionEnum]
+    specialites = [specialite.value for specialite in SpecialiteEnum]
+    statuts = [statut.value for statut in StatutProfessionnelEnum]
+
+    return render_template('admin/dashboard.html',
+                           profiles=profiles,
+                           promotions=promotions,
+                           specialites=specialites,
+                           statuts=statuts)
+
+@admin_bp.route('/search', methods=['POST'])
+@login_required
+def search():
+    # Vérifier si l'utilisateur est un administrateur
+    if not current_user.is_admin:
+        return jsonify({'success': False, 'message': "Vous n'avez pas les droits d'accès à cette action."}), 403
+
+    # Récupérer les paramètres de recherche
+    search_query = request.form.get('query', '')
+    promotion_filter = request.form.get('promotion', '')
+    specialite_filter = request.form.get('specialite', '')
+    statut_filter = request.form.get('statut', '')
+
+    # Construire la requête de base
+    query = UserProfile.query
+
+    # Appliquer les filtres
+    if search_query:
+        query = query.filter(
+            or_(
+                UserProfile.nom_prenoms.ilike(f'%{search_query}%'),
+                UserProfile.email.ilike(f'%{search_query}%'),
+                UserProfile.structure.ilike(f'%{search_query}%'),
+                UserProfile.fonction.ilike(f'%{search_query}%'),
+                UserProfile.localite_residence.ilike(f'%{search_query}%'),
+                UserProfile.biographie.ilike(f'%{search_query}%')
+            )
+        )
+
+    if promotion_filter:
+        # Convertir la valeur du filtre en enum
+        try:
+            promotion_enum = PromotionEnum(promotion_filter)
+            query = query.filter(UserProfile.promotion == promotion_enum)
+        except ValueError:
+            # Si la conversion échoue, ignorer ce filtre
+            pass
+
+    if specialite_filter:
+        # Convertir la valeur du filtre en enum
+        try:
+            specialite_enum = SpecialiteEnum(specialite_filter)
+            query = query.filter(UserProfile.specialite == specialite_enum)
+        except ValueError:
+            # Si la conversion échoue, ignorer ce filtre
+            pass
+
+    if statut_filter:
+        # Convertir la valeur du filtre en enum
+        try:
+            statut_enum = StatutProfessionnelEnum(statut_filter)
+            query = query.filter(UserProfile.statut_professionnel == statut_enum)
+        except ValueError:
+            # Si la conversion échoue, ignorer ce filtre
+            pass
+
+    # Exécuter la requête
+    profiles = query.all()
+
+    # Préparer les résultats pour le rendu AJAX
+    results = []
+    for profile in profiles:
+        results.append({
+            'id': profile.user_id,
+            'nom_prenoms': profile.nom_prenoms,
+            'email': profile.email,
+            'promotion': profile.promotion.value if profile.promotion else '',
+            'specialite': profile.specialite.value if profile.specialite else '',
+            'structure': profile.structure or '',
+            'fonction': profile.fonction or '',
+            'statut_professionnel': profile.statut_professionnel.value if profile.statut_professionnel else '',
+            'photo_url': f'/static/uploads/photos/{profile.photo_filename}' if profile.photo_filename else '/static/assets/images/avatars/avatar-2.jpg',
+        })
+
+    return jsonify({'success': True, 'profiles': results})
 
 @admin_bp.route('/add-member', methods=['GET', 'POST'])
 @login_required
@@ -274,3 +363,191 @@ def reset_password(user_id):
             send_sms(profile.numero_whatsapp, sms_message)
 
     return jsonify({'success': True, 'message': "Le mot de passe a été réinitialisé et envoyé à l'utilisateur."})
+
+@admin_bp.route('/import-members', methods=['GET', 'POST'])
+@login_required
+def import_members():
+    # Vérifier si l'utilisateur est un administrateur
+    if not current_user.is_admin:
+        flash("Vous n'avez pas les droits d'accès à cette page.", 'danger')
+        return redirect(url_for('index.index'))
+
+    results = {
+        'success': 0,
+        'errors': [],
+        'total': 0
+    }
+
+    if request.method == 'POST':
+        # Vérifier si un fichier a été téléchargé
+        if 'file' not in request.files:
+            flash('Aucun fichier sélectionné', 'danger')
+            return redirect(request.url)
+
+        file = request.files['file']
+
+        if file.filename == '':
+            flash('Aucun fichier sélectionné', 'danger')
+            return redirect(request.url)
+
+        # Vérifier l'extension du fichier (CSV ou Excel)
+        if not (file.filename.endswith('.csv') or file.filename.endswith('.xlsx') or file.filename.endswith('.xls')):
+            flash('Format de fichier non supporté. Veuillez télécharger un fichier CSV ou Excel (.xlsx, .xls)', 'danger')
+            return redirect(request.url)
+
+        try:
+            # Lecture du fichier selon son format
+            if file.filename.endswith('.csv'):
+                # Lire le fichier CSV
+                stream = io.StringIO(file.stream.read().decode('utf-8'), newline=None)
+                reader = csv.DictReader(stream)
+                data = [row for row in reader]
+            else:
+                # Lire le fichier Excel
+                df = pd.read_excel(file)
+                data = df.to_dict('records')
+
+            results['total'] = len(data)
+
+            # Champs requis et correspondance
+            required_fields = ['email', 'nom_prenoms']
+
+            # Traitement de chaque ligne
+            for index, row in enumerate(data, start=1):
+                try:
+                    # Vérifier les champs requis
+                    missing_fields = [field for field in required_fields if field not in row or not row[field]]
+                    if missing_fields:
+                        results['errors'].append(f"Ligne {index}: champs manquants: {', '.join(missing_fields)}")
+                        continue
+
+                    # Vérifier si l'utilisateur existe déjà
+                    email = row['email'].strip()
+                    existing_user = User.query.filter_by(email=email).first()
+                    if existing_user:
+                        results['errors'].append(f"Ligne {index}: Un utilisateur avec l'email {email} existe déjà.")
+                        continue
+
+                    # Créer un nouvel utilisateur
+                    password = generate_password()
+                    new_user = User(email=email, role=RoleEnum.USER)
+                    new_user.set_password(password)
+                    db.session.add(new_user)
+                    db.session.flush()  # Pour obtenir l'ID de l'utilisateur
+
+                    # Créer un profil pour l'utilisateur
+                    new_profile = UserProfile(
+                        user_id=new_user.id,
+                        nom_prenoms=row['nom_prenoms'].strip(),
+                        email=email
+                    )
+
+                    # Traiter les champs optionnels
+                    if 'promotion' in row and row['promotion']:
+                        try:
+                            promotion_value = row['promotion'].strip()
+                            # Vérifier si la valeur correspond à une énumération
+                            for enum_value in PromotionEnum:
+                                if enum_value.value == promotion_value:
+                                    new_profile.promotion = enum_value
+                                    break
+                        except Exception as e:
+                            print(f"Erreur lors du traitement de la promotion: {e}")
+
+                    if 'specialite' in row and row['specialite']:
+                        try:
+                            specialite_value = row['specialite'].strip()
+                            for enum_value in SpecialiteEnum:
+                                if enum_value.value == specialite_value:
+                                    new_profile.specialite = enum_value
+                                    break
+                        except Exception as e:
+                            print(f"Erreur lors du traitement de la spécialité: {e}")
+
+                    if 'statut_professionnel' in row and row['statut_professionnel']:
+                        try:
+                            statut_value = row['statut_professionnel'].strip()
+                            for enum_value in StatutProfessionnelEnum:
+                                if enum_value.value == statut_value:
+                                    new_profile.statut_professionnel = enum_value
+                                    break
+                        except Exception as e:
+                            print(f"Erreur lors du traitement du statut professionnel: {e}")
+
+                    # Autres champs simples
+                    field_mapping = {
+                        'structure': 'structure',
+                        'fonction': 'fonction',
+                        'localite_residence': 'localite_residence',
+                        'numero_whatsapp': 'numero_whatsapp',
+                        'autres_numeros': 'autres_numeros',
+                        'compte_linkedin': 'compte_linkedin',
+                        'biographie': 'biographie'
+                    }
+
+                    for csv_field, model_field in field_mapping.items():
+                        if csv_field in row and row[csv_field]:
+                            setattr(new_profile, model_field, row[csv_field].strip())
+
+                    # Champ booléen
+                    if 'is_mentor_available' in row:
+                        value = row['is_mentor_available']
+                        if isinstance(value, bool):
+                            new_profile.is_mentor_available = value
+                        elif isinstance(value, str):
+                            value = value.lower().strip()
+                            new_profile.is_mentor_available = value in ('true', 'oui', 'yes', '1')
+
+                    db.session.add(new_profile)
+
+                    # Envoyer un email avec les identifiants
+                    email_subject = "Bienvenue dans l'annuaire des alumni"
+                    email_message = f"""
+                    Bonjour {new_profile.nom_prenoms},
+
+                    Votre compte a été créé dans l'annuaire ENSA.
+
+                    Voici vos identifiants de connexion:
+                    Email: {email}
+                    Mot de passe: {password}
+
+                    Nous vous invitons à vous connecter et à compléter votre profil ainsi qu'à réinitialiser votre mot de passe.
+
+                    Cordialement,
+                    L'équipe de l'annuaire
+                    """
+
+                    send_email(email, email_subject, email_message)
+
+                    # Envoyer un SMS si un numéro WhatsApp est fourni
+                    if new_profile.numero_whatsapp:
+                        sms_message = f"Bienvenue dans l'annuaire des alumni! Vos identifiants: Email: {email}, Mot de passe: {password}"
+                        send_sms(new_profile.numero_whatsapp, sms_message)
+
+                    results['success'] += 1
+
+                except Exception as e:
+                    results['errors'].append(f"Ligne {index}: {str(e)}")
+                    db.session.rollback()
+
+            # Valider les transactions réussies
+            if results['success'] > 0:
+                db.session.commit()
+                flash(f"{results['success']} membre(s) importé(s) avec succès. {len(results['errors'])} erreur(s).", 'success')
+            else:
+                flash("Aucun membre n'a été importé. Veuillez vérifier les erreurs.", 'danger')
+
+        except Exception as e:
+            results['errors'].append(f"Erreur lors du traitement du fichier: {str(e)}")
+            flash(f"Erreur lors du traitement du fichier: {str(e)}", 'danger')
+
+    # Liste des champs d'énumération pour le template
+    promotions = [promotion.value for promotion in PromotionEnum]
+    specialites = [specialite.value for specialite in SpecialiteEnum]
+    statuts = [statut.value for statut in StatutProfessionnelEnum]
+
+    return render_template('admin/import_members.html',
+                           results=results,
+                           promotions=promotions,
+                           specialites=specialites,
+                           statuts=statuts)

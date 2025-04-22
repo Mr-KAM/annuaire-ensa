@@ -19,14 +19,22 @@
 
 {% block content %}
 <div class=" rounded-3xl shadow-md p-6 bg-base-100">
-    <div class="flex justify-between items-center mb-6">
+<div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold ">Admin</h1>
-        <a href="{{ url_for('admin.add_member') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-            </svg>
-            Ajouter un membre
-        </a>
+        <div class="flex space-x-3">
+            <a href="{{ url_for('admin.import_members') }}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                </svg>
+                Importer CSV/Excel
+            </a>
+            <a href="{{ url_for('admin.add_member') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Ajouter un membre
+            </a>
+        </div>
     </div>
 
     <!-- Search and Filters -->
@@ -206,107 +214,122 @@
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Search form submission
+        // Éléments du DOM
         const searchForm = document.getElementById('search-form');
+        const membersList = document.getElementById('members-list');
+        const queryInput = document.getElementById('query');
+        const promotionFilter = document.getElementById('promotion-filter');
+        const specialiteFilter = document.getElementById('specialite-filter');
+        const statutFilter = document.getElementById('statut-filter');
+
+        // Initialisation des événements pour les filtres
         searchForm.addEventListener('submit', function(e) {
             e.preventDefault();
+            performSearch();
+        });
+
+        // Gérer le changement de valeur pour les filtres (recherche automatique)
+        promotionFilter.addEventListener('change', performSearch);
+        specialiteFilter.addEventListener('change', performSearch);
+        statutFilter.addEventListener('change', performSearch);
+        queryInput.addEventListener('input', debounce(performSearch, 500)); // Recherche après 500ms sans frappe
+
+        // Fonction pour effectuer une recherche avec les paramètres actuels
+        function performSearch() {
+            // Afficher un indicateur de chargement
+            membersList.innerHTML = `
+                <tr>
+                    <td colspan="6" class="text-center py-8">
+                        <div class="flex flex-col items-center">
+                            <div class="loading loading-spinner loading-lg"></div>
+                            <p class="mt-2">Recherche en cours...</p>
+                        </div>
+                    </td>
+                </tr>`;
+
             const formData = new FormData(searchForm);
 
-            fetch('{{ url_for("annuaire.search") }}', {
+            fetch('{{ url_for("admin.search") }}', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erreur réseau ou serveur');
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
                     updateMembersList(data.profiles);
+                } else {
+                    console.error('Erreur:', data.message || 'Une erreur est survenue');
+                    showError('Une erreur est survenue lors de la recherche');
                 }
             })
-            .catch(error => console.error('Error:', error));
-        });
-
-        // Delete member functionality
-        const deleteButtons = document.querySelectorAll('.delete-btn');
-        const deleteModal = document.getElementById('delete-modal');
-        const cancelDelete = document.getElementById('cancel-delete');
-        const confirmDelete = document.getElementById('confirm-delete');
-        const deleteUserName = document.getElementById('delete-user-name');
-        let userIdToDelete = null;
-
-        deleteButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                userIdToDelete = this.dataset.userId;
-                deleteUserName.textContent = this.dataset.userName;
-                deleteModal.classList.remove('hidden');
+            .catch(error => {
+                console.error('Erreur:', error);
+                showError('Erreur de connexion au serveur');
             });
-        });
+        }
 
-        cancelDelete.addEventListener('click', function() {
-            deleteModal.classList.add('hidden');
-            userIdToDelete = null;
-        });
+        // Fonction pour afficher une erreur
+        function showError(message) {
+            membersList.innerHTML = `
+                <tr>
+                    <td colspan="6" class="text-center py-8">
+                        <div class="flex flex-col items-center text-red-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                            <h3 class="text-lg font-medium mb-1">Erreur</h3>
+                            <p>${message}</p>
+                        </div>
+                    </td>
+                </tr>`;
+        }
 
-        confirmDelete.addEventListener('click', function() {
-            if (userIdToDelete) {
-                fetch(`{{ url_for('admin.delete_member', user_id=0) }}`.replace('0', userIdToDelete), {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Reload the page to reflect the changes
-                        window.location.reload();
-                    } else {
-                        alert('Erreur lors de la suppression: ' + data.message);
-                    }
-                })
-                .catch(error => console.error('Error:', error))
-                .finally(() => {
-                    deleteModal.classList.add('hidden');
-                    userIdToDelete = null;
-                });
-            }
-        });
+        // Fonction pour afficher le message "Aucun résultat"
+        function showNoResults() {
+            membersList.innerHTML = `
+                <tr>
+                    <td colspan="6" class="text-center py-8">
+                        <div class="flex flex-col items-center text-gray-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <h3 class="text-lg font-medium text-gray-700 mb-1">Aucun résultat trouvé</h3>
+                            <p>Essayez de modifier vos critères de recherche.</p>
+                        </div>
+                    </td>
+                </tr>`;
+        }
 
-        // Reset password functionality
-        const resetPasswordButtons = document.querySelectorAll('.reset-password-btn');
+        // Fonction debounce pour limiter les appels à la recherche
+        function debounce(func, wait) {
+            let timeout;
+            return function() {
+                const context = this, args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    func.apply(context, args);
+                }, wait);
+            };
+        }
 
-        resetPasswordButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const userId = this.dataset.userId;
-
-                if (confirm('Êtes-vous sûr de vouloir réinitialiser le mot de passe de cet utilisateur ?')) {
-                    fetch(`{{ url_for('admin.reset_password', user_id=0) }}`.replace('0', userId), {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Le mot de passe a été réinitialisé et envoyé à l\'utilisateur.');
-                        } else {
-                            alert('Erreur lors de la réinitialisation: ' + data.message);
-                        }
-                    })
-                    .catch(error => console.error('Error:', error));
-                }
-            });
-        });
-
-        // Function to update the members list based on search results
+        // Fonction pour mettre à jour la liste des membres en fonction des résultats de recherche
         function updateMembersList(profiles) {
-            const membersList = document.getElementById('members-list');
+            if (profiles.length === 0) {
+                showNoResults();
+                return;
+            }
+
             membersList.innerHTML = '';
 
             profiles.forEach(profile => {
                 const row = document.createElement('tr');
 
-                // Photo and name
+                // Photo et nom
                 let photoHtml = '';
                 if (profile.photo_url) {
                     photoHtml = `<img class="h-10 w-10 rounded-full object-cover" src="${profile.photo_url}" alt="${profile.nom_prenoms}">`;
@@ -321,23 +344,23 @@
                                 ${photoHtml}
                             </div>
                             <div class="ml-4">
-                                <div class="text-sm font-medium text-gray-900">
+                                <div class="text-sm font-medium">
                                     ${profile.nom_prenoms}
                                 </div>
                             </div>
                         </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm ">${profile.email || ''}</div>
+                        <div class="text-sm">${profile.email || ''}</div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm ">${profile.promotion || ''}</div>
+                        <div class="text-sm">${profile.promotion || ''}</div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm ">${profile.structure || ''}</div>
+                        <div class="text-sm">${profile.structure || ''}</div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm ">${profile.fonction || ''}</div>
+                        <div class="text-sm">${profile.fonction || ''}</div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div class="flex justify-end space-x-2">
@@ -369,9 +392,38 @@
                 membersList.appendChild(row);
             });
 
-            // Reattach event listeners to the new buttons
-            const newDeleteButtons = membersList.querySelectorAll('.delete-btn');
-            newDeleteButtons.forEach(button => {
+            // Réattacher les écouteurs d'événements aux nouveaux boutons
+            attachEventListeners();
+        }
+
+        // Fonction pour réinitialiser les filtres
+        function resetFilters() {
+            searchForm.reset();
+            performSearch();
+        }
+
+        // Ajouter un bouton de réinitialisation
+        const resetButton = document.createElement('button');
+        resetButton.type = 'button';
+        resetButton.className = 'bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-xl mr-2';
+        resetButton.textContent = 'Réinitialiser';
+        resetButton.addEventListener('click', resetFilters);
+
+        // Insérer le bouton de réinitialisation à côté du bouton de recherche
+        const submitButton = searchForm.querySelector('button[type="submit"]');
+        submitButton.parentNode.insertBefore(resetButton, submitButton);
+
+        // Delete member functionality
+        const deleteModal = document.getElementById('delete-modal');
+        const cancelDelete = document.getElementById('cancel-delete');
+        const confirmDelete = document.getElementById('confirm-delete');
+        const deleteUserName = document.getElementById('delete-user-name');
+        let userIdToDelete = null;
+
+        function attachEventListeners() {
+            // Attacher les écouteurs aux boutons de suppression
+            const deleteButtons = document.querySelectorAll('.delete-btn');
+            deleteButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     userIdToDelete = this.dataset.userId;
                     deleteUserName.textContent = this.dataset.userName;
@@ -379,31 +431,75 @@
                 });
             });
 
-            const newResetPasswordButtons = membersList.querySelectorAll('.reset-password-btn');
-            newResetPasswordButtons.forEach(button => {
+            // Attacher les écouteurs aux boutons de réinitialisation de mot de passe
+            const resetPasswordButtons = document.querySelectorAll('.reset-password-btn');
+            resetPasswordButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const userId = this.dataset.userId;
-
                     if (confirm('Êtes-vous sûr de vouloir réinitialiser le mot de passe de cet utilisateur ?')) {
-                        fetch(`{{ url_for('admin.reset_password', user_id=0) }}`.replace('0', userId), {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                alert('Le mot de passe a été réinitialisé et envoyé à l\'utilisateur.');
-                            } else {
-                                alert('Erreur lors de la réinitialisation: ' + data.message);
-                            }
-                        })
-                        .catch(error => console.error('Error:', error));
+                        resetPassword(userId);
                     }
                 });
             });
         }
+
+        // Fonction pour réinitialiser le mot de passe
+        function resetPassword(userId) {
+            fetch(`{{ url_for('admin.reset_password', user_id=0) }}`.replace('0', userId), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Le mot de passe a été réinitialisé et envoyé à l\'utilisateur.');
+                } else {
+                    alert('Erreur lors de la réinitialisation: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Une erreur est survenue lors de la réinitialisation du mot de passe.');
+            });
+        }
+
+        // Écouteurs pour le modal de suppression
+        cancelDelete.addEventListener('click', function() {
+            deleteModal.classList.add('hidden');
+            userIdToDelete = null;
+        });
+
+        confirmDelete.addEventListener('click', function() {
+            if (userIdToDelete) {
+                fetch(`{{ url_for('admin.delete_member', user_id=0) }}`.replace('0', userIdToDelete), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        performSearch(); // Rafraîchir les résultats sans recharger la page
+                    } else {
+                        alert('Erreur lors de la suppression: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Une erreur est survenue lors de la suppression.');
+                })
+                .finally(() => {
+                    deleteModal.classList.add('hidden');
+                    userIdToDelete = null;
+                });
+            }
+        });
+
+        // Attacher les écouteurs initiaux
+        attachEventListeners();
     });
 </script>
 {% endblock %}
