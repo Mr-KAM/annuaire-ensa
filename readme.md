@@ -144,9 +144,11 @@ C:.
 
 ![Profile](./static/assets/images/screenshot/profile.png)
 
-**Ajouter un membre (admin)** : Page d'ajout d'un membre
-**Modifier un membre (admin)** : Page de modification d'un membre
-**Supprimer un membre (admin)** : Page de suppression d'un membre
+- **Ajouter un membre (admin)** : Page d'ajout d'un membre
+
+- **Modifier un membre (admin)** : Page de modification d'un membre
+
+- **Supprimer un membre (admin)** : Page de suppression d'un membre
 
 ### Fonctionnalité à ajouter
 
