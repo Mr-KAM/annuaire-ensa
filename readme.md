@@ -39,13 +39,15 @@ python app.py
 
 ## Docker
 
-Vous pouvez également utiliser Docker pour exécuter l'application:
+### Développement local avec Docker
+
+Vous pouvez utiliser Docker pour exécuter l'application en local:
 
 ```bash
 # Construire l'image Docker
 docker build -t annuaire-ensa .
 
-# Lancer le conteneur
+# Lancer le conteneur en local
 docker run -p 5000:5000 \
   -e PUSHBULLET_KEY="votre_clé_pushbullet" \
   -e EMAIL_MESSAGERIE="votre_email" \
@@ -56,7 +58,31 @@ docker run -p 5000:5000 \
 
 Accédez à l'application à l'adresse http://localhost:5000
 
-Pour persister les données, un volume Docker est utilisé pour le dossier `instance` contenant la base de données SQLite.
+### Déploiement Cloud
+
+Pour un déploiement cloud (par exemple sur Back4App, Heroku, etc.):
+
+1. Poussez votre code sur GitHub:
+   ```bash
+   git add .
+   git commit -m "Ajout configuration Docker"
+   git push
+   ```
+
+2. Dans la plateforme de déploiement:
+   - Configurez les variables d'environnement requises:
+     - `PUSHBULLET_KEY`
+     - `EMAIL_MESSAGERIE`
+     - `EMAIL_MESSAGERIE_PASSWORD`
+   - Assurez-vous que le port 5000 est exposé et accessible
+
+3. Pour les plateformes basées sur Docker, le Dockerfile fourni sera utilisé automatiquement.
+
+### Notes importantes
+
+- Un volume Docker est utilisé pour le dossier `instance` afin de persister la base de données SQLite.
+- Le script d'entrée `docker-entrypoint.sh` assure une initialisation correcte de la base de données.
+- Si vous rencontrez des erreurs liées à l'encodage des fichiers, vérifiez que vos fichiers `.py` et `requirements.txt` sont bien encodés en UTF-8 sans BOM.
 
 creer un fichier
 `.env`
