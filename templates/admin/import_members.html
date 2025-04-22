@@ -40,6 +40,45 @@
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Résultats de l'importation (si disponibles) -->
+    {% if results and results.total > 0 %}
+    <div class="mt-8 bg-base-200 p-6 rounded-2xl">
+        <h2 class="text-xl font-bold mb-4">Résultats de l'importation</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div class="p-4 rounded-lg bg-base-100 shadow-sm">
+                <h3 class="font-bold text-lg mb-2">Total</h3>
+                <p class="text-3xl font-bold">{{ results.total }}</p>
+                <p class="text-sm text-gray-500">lignes traitées</p>
+            </div>
+
+            <div class="p-4 rounded-lg bg-green-50 shadow-sm">
+                <h3 class="font-bold text-lg mb-2 text-green-700">Succès</h3>
+                <p class="text-3xl font-bold text-green-700">{{ results.success }}</p>
+                <p class="text-sm text-green-600">membres importés</p>
+            </div>
+
+            <div class="p-4 rounded-lg bg-red-50 shadow-sm">
+                <h3 class="font-bold text-lg mb-2 text-red-700">Erreurs</h3>
+                <p class="text-3xl font-bold text-red-700">{{ results.errors|length }}</p>
+                <p class="text-sm text-red-600">lignes en erreur</p>
+            </div>
+        </div>
+
+        {% if results.errors %}
+        <div>
+            <h3 class="font-bold mb-2">Détail des erreurs:</h3>
+            <div class="error-list p-4 rounded-lg bg-red-50">
+                <ul class="list-disc pl-5">
+                    {% for error in results.errors %}
+                        <li class="text-red-700">{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
         <!-- Formulaire d'importation -->
         <div class="bg-base-200 p-6 rounded-2xl">
             <h2 class="text-xl font-bold mb-4">Télécharger un fichier</h2>
@@ -182,45 +221,7 @@
         </div>
     </div>
 
-    <!-- Résultats de l'importation (si disponibles) -->
-    {% if results and results.total > 0 %}
-    <div class="mt-8 bg-base-200 p-6 rounded-2xl">
-        <h2 class="text-xl font-bold mb-4">Résultats de l'importation</h2>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            <div class="p-4 rounded-lg bg-base-100 shadow-sm">
-                <h3 class="font-bold text-lg mb-2">Total</h3>
-                <p class="text-3xl font-bold">{{ results.total }}</p>
-                <p class="text-sm text-gray-500">lignes traitées</p>
-            </div>
-
-            <div class="p-4 rounded-lg bg-green-50 shadow-sm">
-                <h3 class="font-bold text-lg mb-2 text-green-700">Succès</h3>
-                <p class="text-3xl font-bold text-green-700">{{ results.success }}</p>
-                <p class="text-sm text-green-600">membres importés</p>
-            </div>
-
-            <div class="p-4 rounded-lg bg-red-50 shadow-sm">
-                <h3 class="font-bold text-lg mb-2 text-red-700">Erreurs</h3>
-                <p class="text-3xl font-bold text-red-700">{{ results.errors|length }}</p>
-                <p class="text-sm text-red-600">lignes en erreur</p>
-            </div>
-        </div>
-
-        {% if results.errors %}
-        <div>
-            <h3 class="font-bold mb-2">Détail des erreurs:</h3>
-            <div class="error-list p-4 rounded-lg bg-red-50">
-                <ul class="list-disc pl-5">
-                    {% for error in results.errors %}
-                        <li class="text-red-700">{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-        {% endif %}
-    </div>
-    {% endif %}
 
     <!-- Exemple de fichier à télécharger -->
     <div class="mt-8">
