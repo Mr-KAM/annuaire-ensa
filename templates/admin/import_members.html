@@ -235,7 +235,20 @@ john.doe@example.com,John Doe,2020,Informatique,Acme Inc,Développeur,Paris,+331
 jane.smith@example.com,Jane Smith,2021,Marketing,XYZ Corp,Chef de projet,Lyon,+33987654321,https://linkedin.com/in/janesmith,false</pre>
 
             <p class="mt-4 text-sm text-gray-500">
-                Note: Vous pouvez copier ce contenu et le coller dans un fichier texte, puis l'enregistrer avec l'extension .csv, ou l'utiliser comme référence pour créer un fichier Excel.
+                Note: Vous pouvez copier ce contenu et le coller dans un fichier texte, puis l'enregistrer avec l'extension .csv
+                <br>
+                Ou téléchargez le fichier d'exemple au format Excel suivant :
+                        <!-- Bouton Télécharger modèle -->
+        <a href="{{ url_for('static', filename='assets/models/modele_import_membres.xlsx') }}"
+        download
+        class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl flex items-center">
+         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M12 12v8m0 0l-3-3m3 3l3-3M12 4v8" />
+         </svg>
+         Télécharger modèle
+     </a>
+            </p>
+            <p class="note">Ce fichier doit être structuré correctement pour garantir un import réussi des membres.
             </p>
         </div>
     </div>
