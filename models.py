@@ -21,6 +21,7 @@ class User(db.Model):
     last_login = Column(DateTime, nullable=True)
     messages = db.relationship("Message", back_populates="user")
     likes = db.relationship("Like", back_populates="user")
+    discussion = db.relationship("Discussion", back_populates="user")
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -95,14 +96,14 @@ class UserProfile(db.Model):
         return f"<UserProfile(nom_prenoms='{self.nom_prenoms}', email='{self.email}')>"
 
 
-
-
 class Discussion(db.Model):
     __tablename__ = 'discussions'
-
+    auteur_id = db.Column(db.String, db.ForeignKey('users.id'), nullable=False)
+    date_creation = db.Column(db.DateTime, default=datetime.utcnow)
     id_discussion = db.Column(db.Integer, primary_key=True, autoincrement=True)
     sujet = db.Column(db.String, nullable=False)
     messages = db.relationship("Message", back_populates="discussion")
+    user = db.relationship("User", back_populates="discussion")
 
 
 class Message(db.Model):

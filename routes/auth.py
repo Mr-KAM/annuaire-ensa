@@ -5,6 +5,7 @@ from __init__ import db, mail, send_mail, pb, sendSms
 from models import User, UserProfile, RoleEnum
 import random
 import string
+from datetime import datetime, timedelta
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -17,11 +18,11 @@ def login():
         email = request.form.get('email')
         password = request.form.get('password')
         remember = request.form.get('remember')
-
+        print(bool(remember))
         user = User.query.filter_by(email=email).first()
 
         if user and user.check_password(password):
-            login_user(user,remember=bool(remember))
+            login_user(user,remember=bool(remember),duration=timedelta(days=5))
             user.last_login = db.func.now()
             db.session.commit()
 
