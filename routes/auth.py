@@ -47,6 +47,7 @@ def reset_password():
     if request.method == 'POST':
         email = request.form.get('email')
         user = User.query.filter_by(email=email).first()
+        userprofile=UserProfile.query.filter_by(email=email).first()
 
         if user:
             # Génération d'un mot de passe temporaire
@@ -64,8 +65,8 @@ def reset_password():
                 message,
                 destination
                 )
-            if user.numero_whatsapp:
-                sendSms(pb,message, user.numero_whatsapp)
+            if userprofile.numero_whatsapp:
+                sendSms(pb,message, userprofile.numero_whatsapp)
             flash(f'Un nouveau mot de passe a été envoyé à {email}.', 'success')
             print(f"Pour les besoins de la démo: {temp_password}")
             return redirect(url_for('auth.login'))
