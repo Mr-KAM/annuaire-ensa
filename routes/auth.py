@@ -16,11 +16,12 @@ def login():
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
+        remember = request.form.get('remember')
 
         user = User.query.filter_by(email=email).first()
 
         if user and user.check_password(password):
-            login_user(user)
+            login_user(user,remember=bool(remember))
             user.last_login = db.func.now()
             db.session.commit()
 
