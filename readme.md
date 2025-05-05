@@ -155,13 +155,12 @@ C:.
 
 - [x] Ajouter l'envoie de email lors de la creation d'un compte
 - [x] Envoyer sms à la creation de compte (a revoir)
-- [ ] Ajouter plusieur perrsonnes via un fichier csv ou excel
+- [x] Ajouter plusieur perrsonnes via un fichier csv ou excel
 - [ ] Creer un chat avec les membres
 - [ ] Ajouter un calendrier avec les anniversaires
 - [ ] Ajouter une file d'actualité
 - [ ] Ajouter un forum
 - [ ] Ajouter un blogue
-- [ ] Ajouter un moteur de recherche
 - [ ] Ajouter un système de notification
 - [ ] Ajouter un tableau de bord
 - [ ] Ajouter une page d'offre d'emploi
