@@ -1,5 +1,5 @@
 
-🥳 New UPDATE
+# 🥳 New UPDATE
 
 Une proposition de logo pour l'App
 
