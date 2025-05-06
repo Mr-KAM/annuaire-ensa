@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Discussions - Annuaire des Alumni{% endblock %}
+
+{% block content %}
+<div class="container mx-auto">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">Discussions</h1>
+        <a href="{{ url_for('chat.new_discussion') }}" class="btn btn-primary">Nouvelle discussion</a>
+    </div>
+
+    {% if discussions %}
+        <div class="grid gap-4">
+            {% for discussion in discussions %}
+            <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
+                <div class="card-body">
+                    <h2 class="card-title">
+                        <a href="{{ url_for('chat.show_discussion', discussion_id=discussion.id_discussion) }}" class="hover:text-primary">
+                            {{ discussion.sujet }}
+                        </a>
+                    </h2>
+                    <div class="flex items-center text-sm text-gray-500 mt-2">
+                        <div class="avatar placeholder mr-2">
+                            <div class="bg-neutral-focus text-neutral-content rounded-full w-8">
+                                <span>{{ discussion.user.email[0] | upper }}</span>
+                            </div>
+                        </div>
+                        <span>Créée par <span class="font-semibold">{{ discussion.user.email }}</span></span>
+                        <span class="mx-2">•</span>
+                        <span>{{ discussion.date_creation.strftime('%d/%m/%Y à %H:%M') }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body items-center text-center">
+                <h2 class="card-title">Aucune discussion</h2>
+                <p>Soyez le premier à créer une discussion!</p>
+                <div class="card-actions mt-4">
+                    <a href="{{ url_for('chat.new_discussion') }}" class="btn btn-primary">Créer une discussion</a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}{{ discussion.sujet }} - Discussions{% endblock %}
+
+{% block content %}
+<div class="container mx-auto">
+    <div class="mb-6">
+        <div class="flex items-center justify-between">
+            <h1 class="text-3xl font-bold">{{ discussion.sujet }}</h1>
+            <a href="{{ url_for('chat.list_discussions') }}" class="btn btn-outline">Retour aux discussions</a>
+        </div>
+        <div class="flex items-center text-sm text-gray-500 mt-2">
+            <div class="avatar placeholder mr-2">
+                <div class="bg-neutral-focus text-neutral-content rounded-full w-8">
+                    <span>{{ discussion.user.email[0] | upper }}</span>
+                </div>
+            </div>
+            <span>Créée par <span class="font-semibold">{{ discussion.user.email }}</span></span>
+            <span class="mx-2">•</span>
+            <span>{{ discussion.date_creation.strftime('%d/%m/%Y à %H:%M') }}</span>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="messages space-y-6 mb-8">
+        {% if messages %}
+            {% for message in messages %}
+            <div class="card bg-base-100 shadow-md hover:shadow-lg transition-shadow">
+                <div class="card-body">
+                    <div class="flex items-start">
+                        <div class="avatar placeholder mr-4">
+                            <div class="bg-neutral-focus text-neutral-content rounded-full w-10">
+                                <span>{{ message.user.email[0] | upper }}</span>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between mb-2">
+                                <div>
+                                    <span class="font-bold">{{ message.user.email }}</span>
+                                    <span class="text-xs text-gray-500 ml-2">{{ message.date_ecriture.strftime('%d/%m/%Y à %H:%M') }}</span>
+                                </div>
+                                {% if message.date_modification and message.date_modification != message.date_ecriture %}
+                                <span class="badge badge-sm">Modifié</span>
+                                {% endif %}
+                            </div>
+                            <div class="message-content prose max-w-none">
+                                {{ message.contenu | nl2br }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-end mt-4">
+                        <form method="POST" action="{{ url_for('chat.like_message', message_id=message.id_message) }}">
+                            <button type="submit" class="btn btn-sm btn-ghost gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+                                </svg>
+                                {{ message.likes }}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span>Aucun message dans cette discussion. Soyez le premier à écrire!</span>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <h2 class="card-title">Répondre à la discussion</h2>
+            <form method="POST" action="{{ url_for('chat.send_message', discussion_id=discussion.id_discussion) }}" class="message-form">
+                <div class="form-control">
+                    <textarea name="content" required placeholder="Écrivez votre message..." class="textarea textarea-bordered h-24"></textarea>
+                </div>
+                <div class="form-control mt-4">
+                    <button type="submit" class="btn btn-primary">Envoyer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add nl2br filter for message content
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-scroll to bottom of messages if there are any
+        const messagesContainer = document.querySelector('.messages');
+        if (messagesContainer && messagesContainer.children.length > 0) {
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+    });
+</script>
+{% endblock %}

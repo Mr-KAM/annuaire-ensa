@@ -18,7 +18,7 @@ def login():
         email = request.form.get('email')
         password = request.form.get('password')
         remember = request.form.get('remember')
-        print(bool(remember))
+        print(f"Login attempt: Email={email}, Password={password}, Remember={bool(remember)}")
         user = User.query.filter_by(email=email).first()
 
         if user and user.check_password(password):

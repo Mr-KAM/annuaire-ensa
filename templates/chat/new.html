@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Nouvelle Discussion - Annuaire des Alumni{% endblock %}
+
+{% block content %}
+<div class="container mx-auto">
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-3xl font-bold">Créer une nouvelle discussion</h1>
+        <a href="{{ url_for('chat.list_discussions') }}" class="btn btn-outline">Retour aux discussions</a>
+    </div>
+
+    <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('chat.new_discussion') }}" class="discussion-form">
+                <div class="form-control">
+                    <label for="subject" class="label">
+                        <span class="label-text">Sujet de la discussion</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="subject"
+                        name="subject"
+                        required
+                        class="input input-bordered w-full"
+                        placeholder="Entrez le sujet de votre discussion"
+                    >
+                </div>
+                <div class="form-control mt-6">
+                    <button type="submit" class="btn btn-primary">Créer la discussion</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

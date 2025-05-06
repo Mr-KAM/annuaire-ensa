@@ -121,6 +121,7 @@ def create_app():
     from routes.annuaire import annuaire_bp
     from routes.index import index_bp
     from routes.info import info_bp
+    from routes.chat import chat_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(profile_bp)
@@ -128,6 +129,7 @@ def create_app():
     app.register_blueprint(annuaire_bp)
     app.register_blueprint(index_bp)
     app.register_blueprint(info_bp)
+    app.register_blueprint(chat_bp)
 
     # Fonctions utilitaires et processeurs de contexte
     @app.template_filter('format_date')

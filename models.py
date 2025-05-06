@@ -98,7 +98,7 @@ class UserProfile(db.Model):
 
 class Discussion(db.Model):
     __tablename__ = 'discussions'
-    auteur_id = db.Column(db.String, db.ForeignKey('users.id'), nullable=False)
+    auteur_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     date_creation = db.Column(db.DateTime, default=datetime.utcnow)
     id_discussion = db.Column(db.Integer, primary_key=True, autoincrement=True)
     sujet = db.Column(db.String, nullable=False)
@@ -110,7 +110,7 @@ class Message(db.Model):
     __tablename__ = 'messages'
 
     id_message = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.String, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     id_discussion = db.Column(db.Integer, db.ForeignKey('discussions.id_discussion'), nullable=False)
     contenu = db.Column(db.Text, nullable=False)
     date_ecriture = db.Column(db.DateTime, default=datetime.utcnow)
@@ -122,7 +122,7 @@ class Message(db.Model):
 class Like(db.Model):
     __tablename__ = 'likes'
 
-    user_id = db.Column(db.String, db.ForeignKey('users.id'), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     id_message = db.Column(db.Integer, db.ForeignKey('messages.id_message'), primary_key=True)
 
     user = db.relationship("User", back_populates="likes")
